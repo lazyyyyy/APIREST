@@ -1,7 +1,7 @@
 <?php
 	function getFonctionUtilisateurById($id)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$fonction = null;
 		
 		$req = $bdd->prepare("SELECT * FROM fonction_utilisateur WHERE id = ?");

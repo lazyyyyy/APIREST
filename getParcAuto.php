@@ -1,8 +1,8 @@
 <?php
 	function getParcAutoById($id)
 	{
-		include("connexionBdd.php");
-		include("getLieu.php");
+		require_once("connexionBdd.php");
+		require_once("getLieu.php");
 		$parc_auto = null;
 		
 		$req = $bdd->prepare("SELECT * FROM parc_automobile WHERE id = ?");
@@ -20,9 +20,9 @@
 	
 	function getInfosParcAuto($id)
 	{
-		include("getVehicule.php");
-		include("connexionBdd.php");
-		$parc_auto;
+		require_once("getVehicule.php");
+		require_once("connexionBdd.php");
+		$parc_auto = null;
 		
 		$req = $bdd->prepare("SELECT COUNT(*) nb_vehicule FROM vehicule WHERE id_parc_automobile = ?");
 		$req->execute(array($id));
@@ -47,15 +47,17 @@
 			$parc_auto["nb_vehicules_dispo"] = $data["nb_vehicule"];
 		}
 		
-		$req = $bdd->prepare("SELECT immatricule FROM vehicule WHERE id_parc_automobile = ? AND disponible = 1");
-		$req->execute(array($id));
-		while($data = $req->fetch())
+		$parc_auto["liste_vehicules_dispo"] = null;
+		$j = 0;
+		for($i = 0; $i < sizeof($parc_auto["liste_vehicules"]); $i++)
 		{
-			$parc_auto["liste_vehicules_dispo"] = json_decode(getVehicule($data["immatricule"]));
+			if($parc_auto["liste_vehicules"][$i]["disponible"] == 1)
+			{
+				$parc_auto["liste_vehicules_dispo"][$j] = $parc_auto["liste_vehicules"][$i];
+				$j++;
+			}
 		}
+		
 		return json_encode($parc_auto);
 	}
-	
-	$parc_auto = json_decode(getInfosParcAuto(1));
-	var_dump($parc_auto);
 ?>

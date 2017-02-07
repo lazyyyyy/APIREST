@@ -1,7 +1,7 @@
 <?php
 	function getUtilisateurById($id)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$user = null;
 		
 		$req = $bdd->prepare('SELECT * FROM utilisateur WHERE id = ?');
@@ -17,13 +17,23 @@
 			$user['telephone_portable'] = $data['telephone_portable'];
 			$user['telephone_fixe'] = $data['telephone_fixe'];
 			$user['mail'] = $data['mail'];
-			$user['id_laboratoire'] = $data['id_laboratoire'];
-			$user['id_service_comptable'] = $data['id_service_comptable'];
-			$user['id_fonction_utilisateur'] = $data['id_fonction_utilisateur'];
-			$user['id_activite'] = $data['id_activite'];
-			$user['id_lieu'] = $data['id_lieu'];
+			
+			require_once("getLaboratoire.php");
+			$user['laboratoire'] = json_decode(getLaboById($data['id_laboratoire']));
+			
+			require_once("getServiceComptable.php");
+			$user['service_comptable'] = json_decode(getServiceComptableById($data['id_service_comptable']));
+			
+			require_once("getFonctionUtilisateur.php");
+			$user['fonction_utilisateur'] = json_decode(getFonctionUtilisateurById($data['id_fonction_utilisateur']));
+			
+			require_once("getLieu.php");
+			$user['lieu'] = json_decode(getLieuById($data['id_lieu']));
 		}
 		
 		return json_encode($user);
 	}
+	
+	$user = json_decode(getUtilisateurById(1));
+	var_dump($user);
 ?>

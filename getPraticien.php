@@ -1,7 +1,7 @@
 <?php
 	function getPraticienByName($nom)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$nom = "%".strtoupper($nom)."%";
 		$i = 0;
 		$praticiens = null;
@@ -70,8 +70,4 @@
 		return json_encode($praticiens);
 		
 	}
-	
-	/*$praticiens = json_decode(getPraticienByName(""));
-	var_dump($praticiens);*/
-	
 ?>

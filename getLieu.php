@@ -1,7 +1,7 @@
 <?php
 	function getLieuById($id)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$lieu = null;
 		
 		$req = $bdd->prepare("SELECT * FROM lieu WHERE id = ?");
@@ -14,7 +14,7 @@
 			$lieu["ville"] = $data["ville"];
 			$lieu["pays"] = $data["pays"];
 			
-			include("getRegion.php");
+			require_once("getRegion.php");
 			$lieu["region"] = json_decode(getRegionById($data["id"]));
 		}
 		
@@ -23,7 +23,7 @@
 	
 	function getLieu($mot)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$mot = "%".strtoupper($mot)."%";
 		$i = 0;
 		$lieu = null;
@@ -38,7 +38,7 @@
 			$lieu[$i]["ville"] = $data["ville"];
 			$lieu[$i]["pays"] = $data["pays"];
 			
-			include("getRegion.php");
+			require_once("getRegion.php");
 			$lieu[$i]["region"] = json_decode(getRegionById($data["id"]));
 			
 			$i++;

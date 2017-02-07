@@ -1,7 +1,7 @@
 <?php
 	function connexion($login, $mdp)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$user_id = null;
 		
 		$req = $bdd->prepare("SELECT id_utilisateur id FROM connexion WHERE login = ? AND mdp = ?");

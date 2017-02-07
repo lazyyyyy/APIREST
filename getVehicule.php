@@ -2,7 +2,7 @@
 
 	function getVehicule($immatricule)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$vehicule = null;
 		
 		$req = $bdd->prepare("SELECT * FROM vehicule WHERE immatricule = ?");
@@ -40,7 +40,7 @@
 				$vehicule["parc_automobile"]["id"] = $data2["id"];
 				$vehicule["parc_automobile"]["libelle"] = $data2["libelle"];
 				
-				include("getLieu.php");
+				require_once("getLieu.php");
 				$vehicule["parc_automobile"]["lieu"] = json_decode(getLieuById($data2["id_lieu"]));
 			}
 		}

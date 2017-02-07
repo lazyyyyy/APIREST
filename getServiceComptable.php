@@ -1,7 +1,7 @@
 <?php
 	function getServiceComptableById($id)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$serviceComptable = null;
 		
 		$req = $bdd->prepare("SELECT * FROM service_comptable WHERE id = ?");
@@ -12,7 +12,7 @@
 			$serviceComptable["libelle"] = $data["libelle"];
 			$serviceComptable["description"] = $data["description"];
 			
-			include("getLieu.php");
+			require_once("getLieu.php");
 			$serviceComptable["lieu"] = json_decode(getLieuById($data["id_lieu"]));
 		}
 		

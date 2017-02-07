@@ -1,7 +1,7 @@
 <?php
 	function getProduit($nom)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		
 		$produit = null;
 		$i = 0;
@@ -86,7 +86,4 @@
 		
 		return json_encode($produit);
 	}
-	
-	/*$produit = json_decode(getProduit("es"));
-	var_dump($produit);*/
 ?>

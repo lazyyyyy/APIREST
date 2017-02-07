@@ -1,7 +1,7 @@
 <?php
 	function getRegionById($id)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		$region = null;
 		
 		$req = $bdd->prepare("SELECT * FROM region WHERE id = ?");
@@ -16,7 +16,7 @@
 	
 	function getRegionByLibelle($libelle)
 	{
-		include("connexionBdd.php");
+		require_once("connexionBdd.php");
 		
 		$libelle = "%".strtoupper($libelle)."%";
 		$i = 0;
