@@ -1,7 +1,7 @@
 <?php
 	function getLieuById($id)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		$lieu = null;
 		
 		$req = $bdd->prepare("SELECT * FROM lieu WHERE id = ?");

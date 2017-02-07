@@ -1,7 +1,7 @@
 <?php
 	function getRegionById($id)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		$region = null;
 		
 		$req = $bdd->prepare("SELECT * FROM region WHERE id = ?");
