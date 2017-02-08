@@ -2,7 +2,7 @@
 
 	function getVehicule($immatricule)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		$vehicule = null;
 		
 		$req = $bdd->prepare("SELECT * FROM vehicule WHERE immatricule = ?");
@@ -12,7 +12,16 @@
 			$vehicule["immatricule"] = $data["immatricule"];
 			$vehicule["description"] = $data["description"];
 			$vehicule["kilometrage"] = $data["kilometrage"];
-			$vehicule["disponible"] = $data["disponible"];
+			
+			if($data["disponible"] == 1)
+			{
+				$vehicule["disponible"] = true;
+			}
+			else
+			{
+				$vehicule["disponible"] = false;
+			}
+			
 			$vehicule["equipement"] = $data["equipement"];
 			
 			$req2 = $bdd->prepare("SELECT * FROM energie WHERE id = ?");
