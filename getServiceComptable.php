@@ -1,7 +1,7 @@
 <?php
 	function getServiceComptableById($id)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		$serviceComptable = null;
 		
 		$req = $bdd->prepare("SELECT * FROM service_comptable WHERE id = ?");

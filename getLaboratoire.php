@@ -1,7 +1,7 @@
 <?php
 	function getLaboById($id)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		$labo = null;
 		
 		$req = $bdd->prepare("SELECT * FROM laboratoire WHERE id = ?");

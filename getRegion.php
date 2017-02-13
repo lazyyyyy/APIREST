@@ -16,7 +16,7 @@
 	
 	function getRegionByLibelle($libelle)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		
 		$libelle = "%".strtoupper($libelle)."%";
 		$i = 0;

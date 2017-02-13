@@ -1,7 +1,7 @@
 <?php
 	function connexion($login, $mdp)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		$user_id = null;
 		
 		$req = $bdd->prepare("SELECT id_utilisateur id FROM connexion WHERE login = ? AND mdp = ?");
@@ -13,4 +13,5 @@
 		
 		return json_encode($user_id);
 	}
+	
 ?>

@@ -1,7 +1,7 @@
 <?php
-	function getProduit($nom)
+	function getProduitByName($nom)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		
 		$produit = null;
 		$i = 0;
@@ -16,74 +16,77 @@
 			$produit[$i]["effets"] = $data["effets"];
 			$produit[$i]["contre_indications"] = $data["contre_indications"];
 			
-			$req2 = $bdd->prepare("SELECT * FROM type_individu WHERE id = ?");
-			$req2->execute(array($data["id_type_individu"]));
-			if($data2 = $req2->fetch())
-			{
-				$produit[$i]["type_individu"]["id"] = $data2["id"];
-				$produit[$i]["type_individu"]["libelle"] = $data2["libelle"];
-				$produit[$i]["type_individu"]["description"] = $data2["description"];
-			}
+			require_once("getTypeIndividu.php");
+			$produit[$i]["type_individu"] = json_decode(getTypeIndividuById($data["id_type_individu"]));
 			
-			$req2 = $bdd->prepare("SELECT * FROM composant WHERE id = ?");
-			$req2->execute(array($data["id_composant"]));
-			if($data2 = $req2->fetch())
-			{
-				$produit[$i]["composant"]["id"] = $data2["id"];
-				$produit[$i]["composant"]["libelle"] = $data2["libelle"];
-				$produit[$i]["composant"]["description"] = $data2["description"];
-			}
+			require_once("getComposant.php");
+			$produit[$i]["composant"] = json_decode(getComposantById($data["id_composant"]));
 			
-			$req2 = $bdd->prepare("SELECT * FROM laboratoire WHERE id = ?");
-			$req2->execute(array($data["id_laboratoire"]));
-			if($data2 = $req2->fetch())
-			{
-				$produit[$i]["laboratoire"]["id"] = $data2["id"];
-				$produit[$i]["laboratoire"]["nom"] = $data2["nom"];
-				
-				$req3 = $bdd->prepare("SELECT * FROM lieu WHERE id = ?");
-				$req3->execute(array($data2["id_lieu"]));
-				if($data3 = $req3->fetch())
-				{
-					$produit[$i]["laboratoire"]["lieu"]["id"] = $data3["id"];
-					$produit[$i]["laboratoire"]["lieu"]["libelle"] = $data3["libelle"];
-					$produit[$i]["laboratoire"]["lieu"]["adresse"] = $data3["adresse"];
-					$produit[$i]["laboratoire"]["lieu"]["cp"] = $data3["cp"];
-					$produit[$i]["laboratoire"]["lieu"]["ville"] = $data3["ville"];
-					$produit[$i]["laboratoire"]["lieu"]["pays"] = $data3["pays"];
-					
-					$req4 = $bdd->prepare("SELECT * FROM region WHERE id = ?");
-					$req4->execute(array($data3["region_id"]));
-					if($data4 = $req4->fetch())
-					{
-						$produit[$i]["laboratoire"]["lieu"]["region"]["id"] = $data4["id"];
-						$produit[$i]["laboratoire"]["lieu"]["region"]["libelle"] = $data4["libelle"];
-					}
-				}
-			}
+			require_once("getLaboratoire.php");
+			$produit[$i]["laboratoire"] = json_decode(getLaboById($data["id_laboratoire"]));
 			
-			$req2 = $bdd->prepare("SELECT * FROM dosage WHERE id = ?");
-			$req2->execute(array($data["id_dosage"]));
-			if($data2 = $req2->fetch())
-			{
-				$produit[$i]["dosage"]["id"] = $data2["id"];
-				$produit[$i]["dosage"]["quantite"] = $data2["quantite"];
-				$produit[$i]["dosage"]["unite"] = $data2["unite"];
-				$produit[$i]["dosage"]["description"] = $data2["description"];
-			}
+			require_once("getDosage.php");
+			$produit[$i]["dosage"] = json_decode(getDosageById($data["id_dosage"]));
 			
-			$req2 = $bdd->prepare("SELECT * FROM famille_produit WHERE id = ?");
-			$req2->execute(array($data["id_famille_produit"]));
-			if($data2 = $req2->fetch())
-			{
-				$produit[$i]["famille_produit"]["id"] = $data2["id"];
-				$produit[$i]["famille_produit"]["libelle"] = $data2["libelle"];
-				$produit[$i]["famille_produit"]["description"] = $data2["description"];
-			}
+			require_once("getFamilleProduit.php");
+			$produit[$i]["famille"] = json_decode(getFamilleProduitById($data["id_famille_produit"]));
+			
+			$i++;
+		}
+		return json_encode($produit);
+	}
+	
+	function getProduitById($id)
+	{
+		include("connexionBdd.php");
+		
+		$produit = null;
+		$i = 0;
+		
+		$req = $bdd->prepare("SELECT * FROM produit WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$produit["id"] = $data["id"];
+			$produit["libelle"] = $data["libelle"];
+			$produit["effets"] = $data["effets"];
+			$produit["contre_indications"] = $data["contre_indications"];
+			
+			require_once("getTypeIndividu.php");
+			$produit["type_individu"] = json_decode(getTypeIndividuById($data["id_type_individu"]));
+			
+			require_once("getComposant.php");
+			$produit["composant"] = json_decode(getComposantById($data["id_composant"]));
+			
+			require_once("getLaboratoire.php");
+			$produit["laboratoire"] = json_decode(getLaboById($data["id_laboratoire"]));
+			
+			require_once("getDosage.php");
+			$produit["dosage"] = json_decode(getDosageById($data["id_dosage"]));
+			
+			require_once("getFamilleProduit.php");
+			$produit["famille"] = json_decode(getFamilleProduitById($data["id_famille_produit"]));
+		}
+		return json_encode($produit);
+	}
+	
+	function getProduitByCompteRenduId($id) // id du compte rendu
+	{
+		include("connexionBdd.php");
+		$produits = null;
+		$i = 0;
+		
+		$req = $bdd->prepare("SELECT id_produit FROM compte_rendu_produit WHERE id_compte_rendu = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$produits[$i] = json_decode(getProduitById($data["id_produit"]));
 			
 			$i++;
 		}
 		
-		return json_encode($produit);
+		return json_encode($produits);
 	}
+	
+	var_dump(json_decode(getProduitByCompteRenduId(1)));
 ?>

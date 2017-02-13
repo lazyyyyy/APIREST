@@ -52,7 +52,4 @@
 		
 		return json_encode($parc_auto);
 	}
-	
-	$parcAuto = json_decode(getParcAutoById(1));
-	var_dump($parcAuto);
 ?>

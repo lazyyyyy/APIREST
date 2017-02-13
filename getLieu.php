@@ -23,7 +23,7 @@
 	
 	function getLieu($mot)
 	{
-		require_once("connexionBdd.php");
+		include("connexionBdd.php");
 		$mot = "%".strtoupper($mot)."%";
 		$i = 0;
 		$lieu = null;
