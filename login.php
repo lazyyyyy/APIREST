@@ -13,6 +13,7 @@
 		if($data = $req->fetch())
 		{
 			$user["id"] = $data["id"];
+			$user["message"] = "Bienvenue";
 		}
 		return json_encode($user);
 	}
