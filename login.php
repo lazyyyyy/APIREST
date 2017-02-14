@@ -12,9 +12,9 @@
 		$req->execute(array($login, $mdp));
 		if($data = $req->fetch())
 		{
-			$user_id = $data["id"];
+			$user["id"] = $data["id"];
 		}
-		return json_encode($user_id);
+		return json_encode($user);
 	}
 	
 	echo connexion($loginRecupere,$mdpRecupere);
