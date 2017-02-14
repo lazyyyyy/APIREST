@@ -30,10 +30,6 @@
 			require_once("getLieu.php");
 			$user['lieu'] = json_decode(getLieuById($data['id_lieu']));
 		}
-		
 		return json_encode($user);
 	}
-	
-	$user = json_decode(getUtilisateurById(1));
-	var_dump($user);
 ?>

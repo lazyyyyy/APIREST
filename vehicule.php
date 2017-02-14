@@ -28,7 +28,7 @@
 		$id_parc_auto = null;
 		$reponse = false;
 		
-		$req = $bdd->prepare("SELECT COUNT(*) nb FROM vehicule_utilisateur WHERE id_utilisateur = ? AND date_arrivee = NULL");
+		$req = $bdd->prepare("SELECT COUNT(*) nb FROM vehicule_utilisateur WHERE id_utilisateur = ? AND date_arrivee IS NULL");
 		$req->execute(array($id_utilisateur));
 		if($data = $req->fetch())
 		{
@@ -63,7 +63,7 @@
 		
 		$reponse = false;
 		
-		$req = $bdd->prepare("SELECT immatricule_vehicule  FROM vehicule_utilisateur WHERE id_utilisateur  = ? AND date_arrivee = NULL");
+		$req = $bdd->prepare("SELECT immatricule_vehicule  FROM vehicule_utilisateur WHERE id_utilisateur  = ? AND date_arrivee IS NULL");
 		$req->execute(array($id_utilisateur));
 		if($data = $req->fetch())
 		{
@@ -71,7 +71,7 @@
 			$reponse = $req->execute(array($data["immatricule"]));
 			if($reponse)
 			{
-				$req = $bdd->prepare("UPDATE vehicule_utilisateur SET date_arrivee = NOW(), id_parc_automobile_arrivee = ?, distance_parcourue = ? WHERE id_utilisateur  = ? AND date_arrivee = NULL");
+				$req = $bdd->prepare("UPDATE vehicule_utilisateur SET date_arrivee = NOW(), id_parc_automobile_arrivee = ?, distance_parcourue = ? WHERE id_utilisateur  = ? AND date_arrivee IS NULL");
 				$reponse = $req->execute(array($id_parc_automobile_arrivee, $distance_parcourue, $id_utilisateur));
 			}
 		}
