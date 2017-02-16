@@ -18,16 +18,16 @@
 			$praticiens["mail"] = $data["mail"];
 			$praticiens["date_derniere_visite"] = $data["date_derniere_visite"];
 			
-			require_once("getFonctionPraticienById.php");
+			require_once("fonctions.php");
 			$praticiens["fonction"] = json_decode(getFonctionPraticienById($data["id_fonction_praticien"]));
 			
-			require_once("getTypePraticienById.php");
+			require_once("fonctions.php");
 			$praticiens["type_praticien"] = json_decode(getTypePraticienById($data["id_type_praticien"]));
 			
-			require_once("getSpecialitePraticienById.php");
+			require_once("fonctions.php");
 			$praticiens["specialite"] = json_decode(getSpecialitePraticienById($data["id_specialite"]));
 			
-			require_once("getLieuById.php");
+			require_once("fonctions.php");
 			$praticiens["lieu"] = json_decode(getLieuById($data["id_lieu"]));
 			
 			$i++;

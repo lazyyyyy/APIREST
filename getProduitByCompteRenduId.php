@@ -9,7 +9,7 @@
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
-			require_once("getProduitById.php");
+			require_once("fonctions.php");
 			$produits[$i] = json_decode(getProduitById($data["id_produit"]));
 			
 			$i++;

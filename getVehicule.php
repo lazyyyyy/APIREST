@@ -49,7 +49,7 @@
 				$vehicule["parc_automobile"]["id"] = $data2["id"];
 				$vehicule["parc_automobile"]["libelle"] = $data2["libelle"];
 				
-				require_once("getLieuById.php");
+				require_once("fonctions.php");
 				$vehicule["parc_automobile"]["lieu"] = json_decode(getLieuById($data2["id_lieu"]));
 			}
 		}

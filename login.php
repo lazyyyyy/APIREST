@@ -6,7 +6,7 @@
 	function connexion($login, $mdp)
 	{
 		include("connexionBdd.php");
-		require_once("hashage.php");
+		require_once("fonctions.php");
 		$user = null;
 		
 		$mdp = json_decode(hashage($mdp));

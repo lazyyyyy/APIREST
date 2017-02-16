@@ -11,7 +11,7 @@
 			$labo["id"] = $data["id"];
 			$labo["nom"] = $data["nom"];
 			
-			require_once("getLieuById.php");
+			require_once("fonctions.php");
 			$labo["lieu"] = json_decode(getLieuById($data["id_lieu"]));
 		}
 		

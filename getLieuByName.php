@@ -16,7 +16,7 @@
 			$lieu[$i]["ville"] = $data["ville"];
 			$lieu[$i]["pays"] = $data["pays"];
 			
-			require_once("getRegionById.php");
+			require_once("fonctions.php");
 			$lieu[$i]["region"] = json_decode(getRegionById($data["id"]));
 			
 			$i++;

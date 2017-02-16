@@ -12,7 +12,7 @@
 			$serviceComptable["libelle"] = $data["libelle"];
 			$serviceComptable["description"] = $data["description"];
 			
-			require_once("getLieuById.php");
+			require_once("fonctions.php");
 			$serviceComptable["lieu"] = json_decode(getLieuById($data["id_lieu"]));
 		}
 		

@@ -16,19 +16,19 @@
 			$produit[$i]["effets"] = $data["effets"];
 			$produit[$i]["contre_indications"] = $data["contre_indications"];
 			
-			require_once("getTypeIndividuById.php");
+			require_once("fonctions.php");
 			$produit[$i]["type_individu"] = json_decode(getTypeIndividuById($data["id_type_individu"]));
 			
-			require_once("getComposantById.php");
+			require_once("fonctions.php");
 			$produit[$i]["composant"] = json_decode(getComposantById($data["id_composant"]));
 			
-			require_once("getLaboById.php");
+			require_once("fonctions.php");
 			$produit[$i]["laboratoire"] = json_decode(getLaboById($data["id_laboratoire"]));
 			
-			require_once("getDosageById.php");
+			require_once("fonctions.php");
 			$produit[$i]["dosage"] = json_decode(getDosageById($data["id_dosage"]));
 			
-			require_once("getFamilleProduitById.php");
+			require_once("fonctions.php");
 			$produit[$i]["famille"] = json_decode(getFamilleProduitById($data["id_famille_produit"]));
 			
 			$i++;
