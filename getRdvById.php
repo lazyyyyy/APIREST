@@ -16,11 +16,9 @@
 			require_once("fonctions.php");
 			$rdv["praticien"] = json_decode(getPraticienById($data["id_praticien"]));
 			
-			require_once("fonctions.php");
 			$rdv["visiteur"] = json_decode(getUtilisateurById($data["id_visiteur"]));
 			$rdv["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
 			
-			require_once("fonctions.php");
 			$rdv["lieu"] = json_decode(getLieuById($data["id_lieu"]));
 		}
 		

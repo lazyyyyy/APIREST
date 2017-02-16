@@ -22,13 +22,10 @@
 			require_once("fonctions.php");
 			$praticiens[$i]["fonction"] = json_decode(getFonctionPraticienById($data["id_fonction_praticien"]));
 			
-			require_once("fonctions.php");
 			$praticiens[$i]["type_praticien"] = json_decode(getTypePraticienById($data["id_type_praticien"]));
 			
-			require_once("fonctions.php");
 			$praticiens[$i]["specialite"] = json_decode(getSpecialitePraticienById($data["id_specialite"]));
 			
-			require_once("fonctions.php");
 			$praticiens[$i]["lieu"] = json_decode(getLieuById($data["id_lieu"]));
 			
 			$i++;

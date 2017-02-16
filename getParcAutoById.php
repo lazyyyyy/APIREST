@@ -4,7 +4,6 @@
 	{
 		require_once("fonctions.php");
 		include("connexionBdd.php");
-		require_once("fonctions.php");
 		$parc_auto = null;
 		
 		$req = $bdd->prepare("SELECT * FROM parc_automobile WHERE id = ?");

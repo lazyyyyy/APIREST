@@ -22,13 +22,10 @@
 			require_once("fonctions.php");
 			$user['laboratoire'] = json_decode(getLaboById($data['id_laboratoire']));
 			
-			require_once("fonctions.php");
 			$user['service_comptable'] = json_decode(getServiceComptableById($data['id_service_comptable']));
 			
-			require_once("fonctions.php");
 			$user['fonction_utilisateur'] = json_decode(getFonctionUtilisateurById($data['id_fonction_utilisateur']));
 			
-			require_once("fonctions.php");
 			$user['lieu'] = json_decode(getLieuById($data['id_lieu']));
 		}
 		return json_encode($user);
