@@ -762,7 +762,7 @@
 		
 		
 		//HASHAGE MDP
-		include("hashage.php");
+		//include("hashage.php");
 		$mdp = json_decode(hashage($mdp));
 		
 		$req = $bdd->prepare("INSERT INTO connexion(login, mdp, id_utilisateur) VALUES(?, ?, ?)");
