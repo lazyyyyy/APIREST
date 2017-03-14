@@ -1,6 +1,6 @@
 <?php
 
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 
 	/*function getPraticienByName($nom)

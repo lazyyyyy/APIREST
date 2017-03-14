@@ -28,7 +28,7 @@
 		}
 		return json_encode($produit);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getProduitById($_POST["id_produit"]);
 ?>

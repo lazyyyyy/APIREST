@@ -31,7 +31,7 @@
 		return json_encode($compteRendu);
 	}*/
 	
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getCompteRenduById($_POST["compte_rendu_id"]);
 ?>

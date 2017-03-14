@@ -24,7 +24,7 @@
 		
 		return json_encode($lieu);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getLieuByName($_POST["nom_lieu"]);
 ?>

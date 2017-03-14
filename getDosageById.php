@@ -16,7 +16,7 @@
 		
 		return json_encode($dosage);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getDosageById($_POST["dosage_id"]);
 ?>

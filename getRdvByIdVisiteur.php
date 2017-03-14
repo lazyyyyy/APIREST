@@ -27,6 +27,6 @@
 		
 		return json_encode($rdv);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	echo getRdvByIdVisiteur($_POST['id_visiteur']);
 ?>

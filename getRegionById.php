@@ -13,7 +13,7 @@
 		}
 		return json_encode($region);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getRegionById($_POST["id_region"]);
 ?>

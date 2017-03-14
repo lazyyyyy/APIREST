@@ -34,7 +34,7 @@
 		}
 		return json_encode($reponse);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo reservationVehicule($_POST["immatricule_vehicule"], $_POST["id_utilisateur"]);
 ?>

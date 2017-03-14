@@ -30,7 +30,7 @@
 		}
 		return json_encode($user);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getUtilisateurById($_POST["id_utilisateur"]);
 ?>

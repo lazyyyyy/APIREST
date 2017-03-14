@@ -15,7 +15,7 @@
 		
 		return json_encode($data); //retourne "true" ou "false"
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo addRdv($_POST["date"], $_POST["commentaire"], $_POST["id_praticien"], $_POST["id_visiteur"], $_POST["id_lieu"], $_POST["id_utilisateur"]);
 ?>

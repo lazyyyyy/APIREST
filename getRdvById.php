@@ -24,7 +24,7 @@
 		
 		return json_encode($rdv);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getRdvById($_POST["id_rdv"]);
 ?>

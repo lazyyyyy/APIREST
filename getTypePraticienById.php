@@ -15,7 +15,7 @@
 		
 		return json_encode($type);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getTypePraticienById($_POST["id_type_praticien"]);
 ?>

@@ -17,6 +17,6 @@
 		
 		return json_encode($produits);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	echo getProduitByCompteRenduId($_POST["id_compte_rendu"]);
 ?>

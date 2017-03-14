@@ -15,7 +15,7 @@
 		
 		return json_encode($fonction);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getFonctionUtilisateurById($_POST["id_fonction_utilisateur"]);
 ?>

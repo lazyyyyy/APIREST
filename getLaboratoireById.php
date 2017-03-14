@@ -17,7 +17,7 @@
 		
 		return json_encode($labo);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getLaboratoireById($_POST["id_laboratoire"]);
 ?>

@@ -51,7 +51,7 @@
 		
 		return json_encode($parc_auto);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getParcAutoById($_POST["parc_auto_id"]);
 ?>

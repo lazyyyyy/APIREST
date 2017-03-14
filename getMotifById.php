@@ -15,7 +15,7 @@
 		
 		return json_encode($motif);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getMotifById($_POST["id_motif"]);
 ?>

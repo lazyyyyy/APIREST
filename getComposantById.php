@@ -16,7 +16,7 @@
 		
 		return json_encode($composant);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getComposantById($_POST["composant_id"]);
 ?>

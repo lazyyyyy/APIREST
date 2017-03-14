@@ -18,7 +18,7 @@
 		
 		return json_encode($data);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo removeUtilisateur($_POST["id_utilisateur"]);
 ?>

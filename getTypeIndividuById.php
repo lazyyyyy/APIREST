@@ -15,7 +15,7 @@
 		
 		return json_encode($typeIndividu);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getTypeIndividuById($_POST["id_type_individu"]);
 ?>

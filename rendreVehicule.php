@@ -20,7 +20,7 @@
 		
 		return json_encode($reponse);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo rendreVehicule($_POST["id_utilisateur"], $_POST["id_parc_automobile"], $_POST["distance_parcourue"]);
 ?>

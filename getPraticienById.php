@@ -31,7 +31,7 @@
 		}
 		return json_encode($praticiens);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getPraticienById($_POST["id_praticien"]);
 ?>

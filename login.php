@@ -20,7 +20,7 @@
 		}
 		return json_encode($user);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo connexion($loginRecupere, $mdpRecupere);
 ?>

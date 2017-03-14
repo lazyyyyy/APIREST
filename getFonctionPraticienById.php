@@ -16,6 +16,6 @@
 		return json_encode($fonction);
 	}*/
 	
-	include("fonctions.php");
+	require_once("fonctions.php");
 	echo getFonctionPraticienById($_POST["id_fonction_praticien"]);
 ?>

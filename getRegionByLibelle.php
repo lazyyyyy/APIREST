@@ -18,7 +18,7 @@
 		}
 		return json_encode($region);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getRegionByLibelle($_POST["libelle_region"]);
 ?>

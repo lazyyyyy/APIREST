@@ -5,7 +5,7 @@
 		
 		return json_encode($hash);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo hashage($_POST["mdp"]);
 ?>

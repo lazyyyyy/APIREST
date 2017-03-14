@@ -15,7 +15,7 @@
 		
 		return json_encode($famille);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getFamilleProduitById($_POST["id_famille_produit"]);
 ?>

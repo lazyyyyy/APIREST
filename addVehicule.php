@@ -16,7 +16,7 @@
 		
 		return json_encode($data);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo addVehicule($_POST["immatricule_vehicule"], $_POST["description"], $_POST["kilometrage"], $_POST["disponible"], $_POST["equipement"], $_POST["id_parc_automobile"], $_POST["id_energie"], $_POST["id_type_vehicule"]);
 ?>

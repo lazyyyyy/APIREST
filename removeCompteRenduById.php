@@ -8,7 +8,7 @@
 		
 		return json_encode($data); //retourne true ou false
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo removeCompteRenduById($_POST["id_compte_rendu"]);
 ?>

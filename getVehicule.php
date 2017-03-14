@@ -56,7 +56,7 @@
 		
 		return json_encode($vehicule);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getVehicule($_POST["immatricule_vehicule"]);
 ?>

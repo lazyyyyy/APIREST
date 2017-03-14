@@ -19,6 +19,6 @@
 		return json_encode($serviceComptable);
 	}
 	*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	echo getServiceComptableById($_POST["id_service_comptable"]);
 ?>

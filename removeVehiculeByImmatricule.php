@@ -8,7 +8,7 @@
 		
 		return json_encode($data);
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo removeVehiculeByImmatricule($_POST["immatricule_vehicule"]);
 ?>

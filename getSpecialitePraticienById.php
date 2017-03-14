@@ -16,7 +16,7 @@
 		return json_encode($specialite);
 	}*/
 	
-	include("fonctions.php");
+	require_once("fonctions.php");
 	
 	echo getSpecialitePraticienById($_POST["id_specialite_praticien"]);
 ?>

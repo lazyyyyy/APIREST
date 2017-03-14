@@ -14,7 +14,7 @@
 				
 		return json_encode($data); //retourne true ou false
 	}*/
-	include("fonctions.php");
+	require_once("fonctions.php");
 	if(isset($_POST["autre_motif"]))
 	{
 		echo addCompteRendu($_POST["date"], $_POST["bilan"], $_POST["coef_confiance"], $_POST["coef_notoriete"], $_POST["coef_prescription"], $_POST["id_motif"], $_POST["autre_motif"], $_POST["id_praticien"], $_POST["id_produit"], $_POST["id_utilisateur"]);
