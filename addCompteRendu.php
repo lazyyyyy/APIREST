@@ -1,5 +1,5 @@
 <?php
-	function addCompteRendu($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $id_praticien, $id_produit, $id_utilisateur)
+	/*function addCompteRendu($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $id_praticien, $id_produit, $id_utilisateur)
 	{
 		include("connexionBdd.php");
 		
@@ -13,8 +13,16 @@
 		}
 				
 		return json_encode($data); //retourne true ou false
+	}*/
+	include("fonctions.php");
+	if(isset($_POST["autre_motif"]))
+	{
+		echo addCompteRendu($_POST["date"], $_POST["bilan"], $_POST["coef_confiance"], $_POST["coef_notoriete"], $_POST["coef_prescription"], $_POST["id_motif"], $_POST["autre_motif"], $_POST["id_praticien"], $_POST["id_produit"], $_POST["id_utilisateur"]);
 	}
-	
-	echo addCompteRendu($_POST["date"], $_POST["bilan"], $_POST["coef_confiance"]; $_POST["coef_notoriete"], $_POST["coef_prescription"], $_POST["id_motif"], $_POST["id_praticien"], $_POST["id_produit"], $_POST["id_utilisateur"]);
+	else
+	{
+		$autre_motif == null;
+		echo addCompteRendu($_POST["date"], $_POST["bilan"], $_POST["coef_confiance"], $_POST["coef_notoriete"], $_POST["coef_prescription"], $_POST["id_motif"], $autre_motif, $_POST["id_praticien"], $_POST["id_produit"], $_POST["id_utilisateur"]);
+	}
 	
 ?>

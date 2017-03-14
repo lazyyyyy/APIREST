@@ -1,5 +1,5 @@
 <?php
-	function getLieuByName($nom)
+	/*function getLieuByName($nom)
 	{
 		include("connexionBdd.php");
 		$mot = "%".strtoupper($mot)."%";
@@ -23,7 +23,8 @@
 		}
 		
 		return json_encode($lieu);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getLieuByName($_POST["nom_lieu"]);
 ?>

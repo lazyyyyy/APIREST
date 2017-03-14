@@ -3,7 +3,7 @@
 	$loginRecupere = $_POST['login'];
 	$mdpRecupere = $_POST['mdp'];
 	
-	function connexion($login, $mdp)
+	/*function connexion($login, $mdp)
 	{
 		include("connexionBdd.php");
 		require_once("fonctions.php");
@@ -19,7 +19,8 @@
 			$user["message"] = "Bienvenue";
 		}
 		return json_encode($user);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo connexion($loginRecupere, $mdpRecupere);
 ?>

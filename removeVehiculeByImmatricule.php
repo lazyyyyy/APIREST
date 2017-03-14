@@ -1,5 +1,5 @@
 <?php
-	function removeVehiculeByImmatricule($immatricule)
+	/*function removeVehiculeByImmatricule($immatricule)
 	{
 		include("connexionBdd.php");
 		
@@ -7,7 +7,8 @@
 		$data = $req->execute(array($immatricule));
 		
 		return json_encode($data);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo removeVehiculeByImmatricule($_POST["immatricule_vehicule"]);
 ?>

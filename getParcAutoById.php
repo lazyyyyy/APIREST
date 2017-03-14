@@ -1,6 +1,6 @@
 <?php
 	
-	function getParcAutoById($id)
+	/*function getParcAutoById($id)
 	{
 		require_once("fonctions.php");
 		include("connexionBdd.php");
@@ -50,7 +50,8 @@
 		}
 		
 		return json_encode($parc_auto);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getParcAutoById($_POST["parc_auto_id"]);
 ?>

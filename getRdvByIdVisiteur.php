@@ -1,5 +1,5 @@
 <?php
-	function getRdvByIdVisiteur($id_visiteur)
+	/*function getRdvByIdVisiteur($id_visiteur)
 	{
 		include("connexionBdd.php");
 		
@@ -26,5 +26,7 @@
 		}
 		
 		return json_encode($rdv);
-	}
+	}*/
+	include("fonctions.php");
+	echo getRdvByIdVisiteur($_POST['id_visiteur']);
 ?>

@@ -1,5 +1,5 @@
 <?php
-	function getRdvById($id)
+	/*function getRdvById($id)
 	{
 		include("connexionBdd.php");
 		
@@ -23,7 +23,8 @@
 		}
 		
 		return json_encode($rdv);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getRdvById($_POST["id_rdv"]);
 ?>

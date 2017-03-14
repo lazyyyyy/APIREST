@@ -1,5 +1,5 @@
 <?php
-	function getTypeIndividuById($id)
+	/*function getTypeIndividuById($id)
 	{
 		include("connexionBdd.php");
 		$typeIndividu = null;
@@ -14,7 +14,8 @@
 		}
 		
 		return json_encode($typeIndividu);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getTypeIndividuById($_POST["id_type_individu"]);
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-	function getComposantById($id)
+	/*function getComposantById($id)
 	{
 		include("connexionBdd.php");
 		$composant = null;
@@ -15,7 +15,8 @@
 		}
 		
 		return json_encode($composant);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getComposantById($_POST["composant_id"]);
 ?>

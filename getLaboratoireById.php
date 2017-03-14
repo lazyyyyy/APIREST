@@ -1,5 +1,5 @@
 <?php
-	function getLaboratoireById($id)
+	/*function getLaboratoireById($id)
 	{
 		include("connexionBdd.php");
 		$labo = null;
@@ -16,7 +16,8 @@
 		}
 		
 		return json_encode($labo);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getLaboratoireById($_POST["id_laboratoire"]);
 ?>

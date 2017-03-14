@@ -1,5 +1,5 @@
 <?php
-	function getMotifById($id)
+	/*function getMotifById($id)
 	{
 		include("connexionBdd.php");
 		$motif = null;
@@ -14,7 +14,8 @@
 		}
 		
 		return json_encode($motif);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getMotifById($_POST["id_motif"]);
 ?>

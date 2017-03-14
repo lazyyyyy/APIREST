@@ -1,5 +1,5 @@
 <?php
-	function getUtilisateurById($id)
+	/*function getUtilisateurById($id)
 	{
 		include("connexionBdd.php");
 		$user = null;
@@ -29,7 +29,8 @@
 			$user['lieu'] = json_decode(getLieuById($data['id_lieu']));
 		}
 		return json_encode($user);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getUtilisateurById($_POST["id_utilisateur"]);
 ?>

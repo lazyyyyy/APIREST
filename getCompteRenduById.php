@@ -1,5 +1,5 @@
 <?php
-	function getCompteRenduById($id)
+	/*function getCompteRenduById($id)
 	{
 		include("connexionBdd.php");
 		
@@ -29,7 +29,9 @@
 		}
 		
 		return json_encode($compteRendu);
-	}
+	}*/
+	
+	include("fonctions.php");
 	
 	echo getCompteRenduById($_POST["compte_rendu_id"]);
 ?>

@@ -1,5 +1,5 @@
 <?php
-	function reservationVehicule($immatricule, $id_utilisateur)
+	/*function reservationVehicule($immatricule, $id_utilisateur)
 	{
 		include("connexionBdd.php");
 		
@@ -33,7 +33,8 @@
 			}
 		}
 		return json_encode($reponse);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo reservationVehicule($_POST["immatricule_vehicule"], $_POST["id_utilisateur"]);
 ?>

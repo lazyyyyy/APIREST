@@ -1,5 +1,5 @@
 <?php
-	function getProduitByName($nom)
+	/*function getProduitByName($nom)
 	{
 		include("connexionBdd.php");
 		
@@ -30,7 +30,8 @@
 			$i++;
 		}
 		return json_encode($produit);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getProduitByName($_POST["nom_produit"]);
 ?>

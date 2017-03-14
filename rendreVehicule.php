@@ -1,5 +1,5 @@
 <?php
-	function rendreVehicule($id_utilisateur, $id_parc_automobile_arrivee, $distance_parcourue)
+	/*function rendreVehicule($id_utilisateur, $id_parc_automobile_arrivee, $distance_parcourue)
 	{
 		include("connexionBdd.php");
 		
@@ -19,7 +19,8 @@
 		}
 		
 		return json_encode($reponse);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo rendreVehicule($_POST["id_utilisateur"], $_POST["id_parc_automobile"], $_POST["distance_parcourue"]);
 ?>

@@ -1,5 +1,5 @@
 <?php
-	function getProduitById($id)
+	/*function getProduitById($id)
 	{
 		include("connexionBdd.php");
 		
@@ -27,7 +27,8 @@
 			$produit["famille"] = json_decode(getFamilleProduitById($data["id_famille_produit"]));
 		}
 		return json_encode($produit);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getProduitById($_POST["id_produit"]);
 ?>

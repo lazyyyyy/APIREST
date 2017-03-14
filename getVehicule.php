@@ -1,6 +1,6 @@
 <?php
 
-	function getVehicule($immatricule)
+	/*function getVehicule($immatricule)
 	{
 		include("connexionBdd.php");
 		$vehicule = null;
@@ -55,7 +55,8 @@
 		}
 		
 		return json_encode($vehicule);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getVehicule($_POST["immatricule_vehicule"]);
 ?>

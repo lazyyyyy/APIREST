@@ -1,5 +1,9 @@
 <?php
-	function getPraticienByName($nom)
+
+	include("fonctions.php");
+	
+
+	/*function getPraticienByName($nom)
 	{
 		include("connexionBdd.php");
 		
@@ -30,8 +34,9 @@
 			
 			$i++;
 		}
-		return json_encode($praticiens);
-	}
+		echo json_encode($praticiens);
+		//return json_encode($praticiens);
+	}*/
 	
-	echo getPraticienByName($_POST["nom_praticien"]);
+	echo getPraticienByName($_POST["nom"]);
 ?>

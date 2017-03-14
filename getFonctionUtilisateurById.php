@@ -1,5 +1,5 @@
 <?php
-	function getFonctionUtilisateurById($id)
+	/*function getFonctionUtilisateurById($id)
 	{
 		include("connexionBdd.php");
 		$fonction = null;
@@ -14,7 +14,8 @@
 		}
 		
 		return json_encode($fonction);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getFonctionUtilisateurById($_POST["id_fonction_utilisateur"]);
 ?>

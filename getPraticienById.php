@@ -1,5 +1,5 @@
 <?php
-	function getPraticienById($id)
+	/*function getPraticienById($id)
 	{
 		include("connexionBdd.php");
 		
@@ -30,7 +30,8 @@
 			$i++;
 		}
 		return json_encode($praticiens);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getPraticienById($_POST["id_praticien"]);
 ?>

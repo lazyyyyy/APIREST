@@ -1,5 +1,5 @@
 <?php
-	function getDosageById($id)
+	/*function getDosageById($id)
 	{
 		include("connexionBdd.php");
 		$dosage = null;
@@ -15,7 +15,8 @@
 		}
 		
 		return json_encode($dosage);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getDosageById($_POST["dosage_id"]);
 ?>

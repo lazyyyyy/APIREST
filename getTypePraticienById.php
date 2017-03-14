@@ -1,5 +1,5 @@
 <?php
-	function getTypePraticienById($id)
+	/*function getTypePraticienById($id)
 	{
 		include("connexionBdd.php");
 		$type = null;
@@ -14,7 +14,8 @@
 		}
 		
 		return json_encode($type);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getTypePraticienById($_POST["id_type_praticien"]);
 ?>

@@ -1,5 +1,5 @@
 <?php
-	function getRegionByLibelle($libelle)
+	/*function getRegionByLibelle($libelle)
 	{
 		include("connexionBdd.php");
 		
@@ -17,7 +17,8 @@
 			$i++;
 		}
 		return json_encode($region);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getRegionByLibelle($_POST["libelle_region"]);
 ?>

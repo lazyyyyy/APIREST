@@ -1,5 +1,5 @@
 <?php
-	function getLieuById($id)
+	/*function getLieuById($id)
 	{
 		include("connexionBdd.php");
 		$lieu = null;
@@ -19,7 +19,8 @@
 		}
 		
 		return json_encode($lieu);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getLieuById($_POST["id_lieu"]);
 	

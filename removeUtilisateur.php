@@ -1,5 +1,5 @@
 <?php
-	function removeUtilisateur($id_utilisateur)
+	/*function removeUtilisateur($id_utilisateur)
 	{
 		include("connexionBdd.php");
 		
@@ -17,7 +17,8 @@
 		}
 		
 		return json_encode($data);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo removeUtilisateur($_POST["id_utilisateur"]);
 ?>

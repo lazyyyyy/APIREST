@@ -1,5 +1,5 @@
 <?php
-	function getFamilleProduitById($id)
+	/*function getFamilleProduitById($id)
 	{
 		include("connexionBdd.php");
 		$famille = null;
@@ -14,7 +14,8 @@
 		}
 		
 		return json_encode($famille);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getFamilleProduitById($_POST["id_famille_produit"]);
 ?>

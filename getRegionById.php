@@ -1,5 +1,5 @@
 <?php
-	function getRegionById($id)
+	/*function getRegionById($id)
 	{
 		include("connexionBdd.php");
 		$region = null;
@@ -12,7 +12,8 @@
 			$region["libelle"] = $data["libelle"];
 		}
 		return json_encode($region);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo getRegionById($_POST["id_region"]);
 ?>

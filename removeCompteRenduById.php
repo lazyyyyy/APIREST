@@ -1,5 +1,5 @@
 <?php
-	function removeCompteRenduById($id)
+	/*function removeCompteRenduById($id)
 	{
 		include("connexionBdd.php");
 		
@@ -7,7 +7,8 @@
 		$data = $req->execute(array($id));
 		
 		return json_encode($data); //retourne true ou false
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo removeCompteRenduById($_POST["id_compte_rendu"]);
 ?>

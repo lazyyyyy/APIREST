@@ -1,5 +1,5 @@
 <?php
-	function addRdv($date, $commentaire, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur)
+	/*function addRdv($date, $commentaire, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur)
 	{
 		include("connexionBdd.php");
 		
@@ -14,7 +14,8 @@
 		}
 		
 		return json_encode($data); //retourne "true" ou "false"
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo addRdv($_POST["date"], $_POST["commentaire"], $_POST["id_praticien"], $_POST["id_visiteur"], $_POST["id_lieu"], $_POST["id_utilisateur"]);
 ?>

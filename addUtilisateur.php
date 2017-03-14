@@ -1,5 +1,5 @@
 <?php
-	function addUtilisateur($nom, $prenom, $date_naissance, $date_embauche, $telephone_portable, $telephone_fixe, $mail, $id_laboratoire, $id_service_comptable, $id_fonction_utilisateur, $id_lieu)
+	/*function addUtilisateur($nom, $prenom, $date_naissance, $date_embauche, $telephone_portable, $telephone_fixe, $mail, $id_laboratoire, $id_service_comptable, $id_fonction_utilisateur, $id_lieu)
 	{
 		include("connexionBdd.php");
 		
@@ -46,6 +46,7 @@
 				break;
 			}
 		$mdp = substr($date_naissance, 8, 2)."-".$mois."-".substr($date_naissance, 0, 4);
+		//mot de passe créé automatiquement = "06-may-2005" par exemple, soit le la date d'anniversaire avec: jour-mois(3 premières lettres en anglais)-année
 		
 		
 		//HASHAGE MDP
@@ -62,7 +63,8 @@
 		}
 		
 		return json_encode($data);
-	}
+	}*/
+	include("fonctions.php");
 	
 	echo addUtilisateur($_POST["nom"], $_POST["prenom"], $_POST["date_naissance"], $_POST["date_embauche"], $_POST["telephone_portable"], $_POST["telephone_fixe"], $_POST["email"], $_POST["id_laboratoire"], $_POST["id_service_comptable"], $_POST["id_fonction_utilisateur"], $_POST["id_lieu"]);
 ?>

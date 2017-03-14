@@ -1,5 +1,5 @@
 <?php
-	function getProduitByCompteRenduId($id) // id du compte rendu
+	/*function getProduitByCompteRenduId($id) // id du compte rendu
 	{
 		include("connexionBdd.php");
 		$produits = null;
@@ -16,7 +16,7 @@
 		}
 		
 		return json_encode($produits);
-	}
-	
+	}*/
+	include("fonctions.php");
 	echo getProduitByCompteRenduId($_POST["id_compte_rendu"]);
 ?>

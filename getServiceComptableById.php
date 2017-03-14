@@ -1,5 +1,5 @@
 <?php
-	function getServiceComptableById($id)
+	/*function getServiceComptableById($id)
 	{
 		include("connexionBdd.php");
 		$serviceComptable = null;
@@ -18,6 +18,7 @@
 		
 		return json_encode($serviceComptable);
 	}
-	
+	*/
+	include("fonctions.php");
 	echo getServiceComptableById($_POST["id_service_comptable"]);
 ?>
