@@ -317,7 +317,7 @@
 			
 			$produit[$i]["composant"] = json_decode(getComposantById($data["id_composant"]));
 			
-			$produit[$i]["laboratoire"] = json_decode(getLaboById($data["id_laboratoire"]));
+			$produit[$i]["laboratoire"] = json_decode(getLaboratoireById($data["id_laboratoire"]));
 			
 			$produit[$i]["dosage"] = json_decode(getDosageById($data["id_dosage"]));
 			
@@ -478,7 +478,7 @@
 			$user['telephone_fixe'] = $data['telephone_fixe'];
 			$user['mail'] = $data['mail'];
 			
-			$user['laboratoire'] = json_decode(getLaboById($data['id_laboratoire']));
+			$user['laboratoire'] = json_decode(getLaboratoireById($data['id_laboratoire']));
 			
 			$user['service_comptable'] = json_decode(getServiceComptableById($data['id_service_comptable']));
 			
