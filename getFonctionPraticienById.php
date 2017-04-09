@@ -17,5 +17,5 @@
 	}*/
 	
 	require_once("fonctions.php");
-	echo getFonctionPraticienById($_POST["id_fonction_praticien"]);
+	echo getFonctionPraticienById($_POST["fonction_praticien_id"]);
 ?>

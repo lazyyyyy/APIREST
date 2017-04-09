@@ -1,5 +1,22 @@
 <?php
 	//J'ai copié toutes les fonctions pour ne pas appeler le "echo" des fonctions de l'API
+	function getTypesDeFrais() //retourne la liste de tous les types de frais
+	{
+		include("connexionBdd.php");
+		$typesDeFrais = null;
+		$i = 0;
+		$req = $bdd->query("SELECT * FROM type_frais");
+		while($data = $req->fetch())
+		{
+			$typesDeFrais[$i]["id"] = $data["id"];
+			$typesDeFrais[$i]["libelle"] = $data["libelle"];
+			$typesDeFrais[$i]["description"] = $data["description"];
+			
+			$i++;
+		}
+		
+		return json_encode($typesDeFrais);
+	}
 
 	function getFamilleProduitById($id)
 	{
