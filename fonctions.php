@@ -1,5 +1,47 @@
 <?php
 	//J'ai copié toutes les fonctions pour ne pas appeler le "echo" des fonctions de l'API
+	function addPj($url, $libelle, $id_frais)
+	{
+		include("connexionBdd.php");
+		try{
+			$req = $bdd->prepare("INSERT INTO justificatif(url, libelle, id_frais) VALUES(?, ?, ?)");
+			$data = $req->execute(array($url, $libelle, $id_frais));
+		}catch(Exception $e){
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
+	function addFrais($montant, $commentaire, $date, $id_utilisateur, $id_type_frais)
+	{
+		include("connexionBdd.php");
+		try{
+			$req = $bdd->prepare("INSERT INTO frais(montant, commentaire, date, id_utilisateur, id_type_frais) VALUES(?, ?, ?, ?, ?)");
+			$data = $req->execute(array($montant, $commentaire, $date, $id_utilisateur, $id_type_frais));
+		}catch(Exception $e)
+		{
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
+	function getIdFrais($montant, $commentaire, $date, $id_utilisateur, $id_type_frais)
+	{
+		include("connexionBdd.php");
+		$idFrais = null;
+		$req = $bdd->prepare("SELECT id FROM frais WHERE montant=? AND commentaire=? AND date=? AND id_utilisateur=? AND id_type_frais=?");
+		$req->execute(array($montant, $commentaire, $date, $id_utilisateur, $id_type_frais));
+		if($data = $req->fetch())
+		{
+			$idFrais = $data["id"];
+		}
+		
+		return json_encode($idFrais);
+	}
+
+	
 	function getTypesDeFrais() //retourne la liste de tous les types de frais
 	{
 		include("connexionBdd.php");
