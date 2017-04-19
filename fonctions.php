@@ -342,13 +342,21 @@
 			$produit["effets"] = $data["effets"];
 			$produit["contre_indications"] = $data["contre_indications"];
 			
-			$produit["type_individu"] = json_decode(getTypeIndividuById($data["id_type_individu"]));
+			$produit["type_individu"] = $data["type_individu"];
 			
-			$produit["composant"] = json_decode(getComposantById($data["id_composant"]));
+			$i = 0;
+			$req2 = $bdd->prepare("SELECT * FROM produit_composants WHERE produit_id = ?");
+			$req2->execute(array($data["id"]));
+			while($data2 = $req2->fetch())
+			{
+				$produit["composant"][$i] = json_decode(getComposantById($data2["composant_id"]));
+				$i++;
+			}
+			//$produit["composant"] = json_decode(getComposantById($data["id_composant"]));
 			
 			$produit["laboratoire"] = json_decode(getLaboratoireById($data["id_laboratoire"]));
 			
-			$produit["dosage"] = json_decode(getDosageById($data["id_dosage"]));
+			$produit["dosage"] = $data["dosage"];
 			
 			$produit["famille"] = json_decode(getFamilleProduitById($data["id_famille_produit"]));
 		}
@@ -372,13 +380,21 @@
 			$produit[$i]["effets"] = $data["effets"];
 			$produit[$i]["contre_indications"] = $data["contre_indications"];
 			
-			$produit[$i]["type_individu"] = json_decode(getTypeIndividuById($data["id_type_individu"]));
+			$produit["type_individu"] = $data["type_individu"];
 			
-			$produit[$i]["composant"] = json_decode(getComposantById($data["id_composant"]));
+			$i = 0;
+			$req2 = $bdd->prepare("SELECT * FROM produit_composants WHERE produit_id = ?");
+			$req2->execute(array($data["id"]));
+			while($data2 = $req2->fetch())
+			{
+				$produit["composant"][$i] = json_decode(getComposantById($data2["composant_id"]));
+				$i++;
+			}
+			//$produit[$i]["composant"] = json_decode(getComposantById($data["id_composant"]));
 			
 			$produit[$i]["laboratoire"] = json_decode(getLaboratoireById($data["id_laboratoire"]));
 			
-			$produit[$i]["dosage"] = json_decode(getDosageById($data["id_dosage"]));
+			$produit[$i]["dosage"] = $data["dosage"];
 			
 			$produit[$i]["famille"] = json_decode(getFamilleProduitById($data["id_famille_produit"]));
 			
@@ -625,6 +641,8 @@
 		{
 			$user["id"] = $data["id"];
 			$user["message"] = "Bienvenue";
+		}else{
+			$user["message"] = "N'arrive pas a se connecter";
 		}
 		return json_encode($user);
 	}
