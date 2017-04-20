@@ -33,5 +33,6 @@
 	}*/
 	require_once("fonctions.php");
 	
-	echo getProduitByName($_POST["nom_produit"]);
+	//echo getProduitByName($_POST["nom_produit"]);
+	echo getProduitByName("");
 ?>

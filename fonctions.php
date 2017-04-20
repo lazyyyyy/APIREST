@@ -380,15 +380,15 @@
 			$produit[$i]["effets"] = $data["effets"];
 			$produit[$i]["contre_indications"] = $data["contre_indications"];
 			
-			$produit["type_individu"] = $data["type_individu"];
+			$produit[$i]["type_individu"] = $data["type_individu"];
 			
-			$i = 0;
+			$j = 0;
 			$req2 = $bdd->prepare("SELECT * FROM produit_composants WHERE produit_id = ?");
 			$req2->execute(array($data["id"]));
 			while($data2 = $req2->fetch())
 			{
-				$produit["composant"][$i] = json_decode(getComposantById($data2["composant_id"]));
-				$i++;
+				$produit[$i]["composant"][$j] = json_decode(getComposantById($data2["composant_id"]));
+				$j++;
 			}
 			//$produit[$i]["composant"] = json_decode(getComposantById($data["id_composant"]));
 			
