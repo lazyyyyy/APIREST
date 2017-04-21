@@ -192,6 +192,26 @@
 		return json_encode($motif);
 	}
 	
+	function getMotifByName($nom)
+	{
+		include("connexionBdd.php");
+		$motifs = null;
+		$i = 0;
+		$libelle = "%".strtoupper($nom)."%";
+		
+		$req = $bdd->prepare("SELECT * FROM motif WHERE UCASE(libelle) LIKE ?");
+		$req->execute(array($libelle));
+		while($data = $req->fetch())
+		{
+			$motifs[$i]["id"] = $data["id"];
+			$motifs[$i]["libelle"] = $data["libelle"];
+			$motifs[$i]["description"] = $data["description"];
+			$i++;
+		}
+		
+		return json_encode($motifs);
+	}
+	
 	function getParcAutoById($id)
 	{
 		include("connexionBdd.php");
