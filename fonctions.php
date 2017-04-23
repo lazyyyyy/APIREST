@@ -1,5 +1,6 @@
 <?php
 	//J'ai copié toutes les fonctions pour ne pas appeler le "echo" des fonctions de l'API
+	
 	function addPj($url, $libelle, $id_frais)
 	{
 		include("connexionBdd.php");
@@ -697,6 +698,24 @@
 			
 			$req = $bdd->prepare("DELETE FROM utilisateur WHERE id = ?");
 			$data = $req->execute(array($id_utilisateur));
+		}
+		catch(Exception $e)
+		{
+			echo $e->getMessage();
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
+	function removePraticien($id_praticien)
+	{
+		include("connexionBdd.php");
+		
+		try{
+			$req = $bdd->prepare("DELETE FROM praticien WHERE id = ?");
+			$req->execute(array($id_praticien));
+			$data = true;
 		}
 		catch(Exception $e)
 		{
