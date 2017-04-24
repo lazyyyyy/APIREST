@@ -643,8 +643,7 @@
 	
 	function hashage($mot)
 	{
-		include("hashKey.php");
-		$hash = crypt($mot, $key);
+		$hash = md5($mot);
 		
 		return json_encode($hash);
 	}
