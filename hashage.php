@@ -7,5 +7,5 @@
 	}*/
 	require_once("fonctions.php");
 	
-	echo hashage("06-may-2016");
+	echo hashage($_POST["mdp"]);
 ?>
