@@ -154,7 +154,7 @@
 	function getLieuByName($nom)
 	{
 		include("connexionBdd.php");
-		$mot = "%".strtoupper($mot)."%";
+		$mot = "%".strtoupper($nom)."%";
 		$i = 0;
 		$lieu = null;
 		
@@ -162,6 +162,7 @@
 		$req->execute(array($mot, $mot, $mot, $mot, $mot));
 		while($data = $req->fetch())
 		{
+			$lieu[$i]["id"] = $data["id"];
 			$lieu[$i]["libelle"] = $data["libelle"];
 			$lieu[$i]["adresse"] = $data["adresse"];
 			$lieu[$i]["cp"] = $data["cp"];
@@ -329,6 +330,23 @@
 		return json_encode($praticiens);
 	}
 	
+	function modifierPraticien($id, $nom, $prenom, $telFixe, $telPortable, $mail, $typePraticien, $specialite, $libelleLieu, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $dateDerniereVisiste)
+	{
+		include("connexionBdd.php");
+		$reponse = false;
+		$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region = ? WHERE id = ?");
+		$req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $libelleLieu));
+		if($data = $req->fetch())
+		{
+			$req = $bdd->prepare("UPDATE praticien SET nom = ?, prenom = ?, telephone_fixe = ?, telephone_portable = ?, mail = ?, id_type_praticien = ?, id_specialite = ?, id_lieu = ?, date_derniere_visite = ? WHERE id = ?");
+			$req->execute(array($nom, $prenom, $telFixe, $telPortable, $mail, $typePraticien, $specialite, $libelleLieu, $dateDerniereVisiste, $id));
+			$data2 = $req->fetch();
+			$reponse = $data2;
+		}
+		
+		return json_encode($reponse);
+	}
+	
 	function getProduitByCompteRenduId($id) // id du compte rendu
 	{
 		include("connexionBdd.php");
@@ -464,6 +482,25 @@
 		return json_encode($region);
 	}
 	
+	function getRegionByName($nom)
+	{
+		include("connexionBdd.php");
+		$regions = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		
+		$req = $bdd->prepare("SELECT * FROM region WHERE libelle LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$regions[$i]["id"] = $data["id"];
+			$regions[$i]["libelle"] = $data["libelle"];
+			$i++;
+		}
+		
+		return json_encode($regions);
+	}
+	
 	function getRegionByLibelle($libelle)
 	{
 		include("connexionBdd.php");
@@ -520,6 +557,27 @@
 		return json_encode($specialite);
 	}
 	
+	function getSpecialitePraticienByName($nom)
+	{
+		include("connexionBdd.php");
+		$specialites = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		
+		$req = $bdd->prepare("SELECT * FROM specialite WHERE libelle LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$specialites[$i]["id"] = $data["id"];
+			$specialites[$i]["libelle"] = $data["libelle"];
+			$specialites[$i]["description"] = $data["description"];
+			
+			$i++;
+		}
+		
+		return json_encode($specialites);
+	}
+	
 	function getTypeIndividuById($id)
 	{
 		include("connexionBdd.php");
@@ -552,6 +610,27 @@
 		}
 		
 		return json_encode($type);
+	}
+	
+	function getTypePraticienByName($nom)
+	{
+		include("connexionBdd.php");
+		$types = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		
+		$req = $bdd->prepare("SELECT * FROM type_praticien WHERE libelle LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$types[$i]["id"] = $data["id"];
+			$types[$i]["libelle"] = $data["libelle"];
+			$types[$i]["description"] = $data["description"];
+			
+			$i++;
+		}
+		
+		return json_encode($types);
 	}
 	
 	function getUtilisateurById($id)
@@ -809,14 +888,14 @@
 		return json_encode($data); //retourne true ou false
 	}
 	
-	function addRdv($date, $commentaire, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur)
+	function addRdv($date, $description, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur)
 	{
 		include("connexionBdd.php");
 		
 		try
 		{
-			$req = $bdd->prepare("INSERT INTO rdv(date, commentaire, id_praticien, id_visiteur, id_lieu, id_utilisateur) VALUES(?, ?, ?, ?, ?, ?)");
-			$data = $req->execute(array($date, $commentaire, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur));
+			$req = $bdd->prepare("INSERT INTO rdv(date, description, id_praticien, id_visiteur, id_lieu, id_utilisateur) VALUES(?, ?, ?, ?, ?, ?)");
+			$data = $req->execute(array($date, $description, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur));
 		}
 		catch(Exception $e)
 		{
