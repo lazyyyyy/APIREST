@@ -1035,6 +1035,28 @@
 		return json_encode($compteRendu);
 	}
 	
+	function getEchantillonByCompteRenduId($id)
+	{
+		include("connexionBdd.php");
+		$echantillons = null;
+		$i = 0;
+		
+		$req = $bdd->prepare("SELECT echantillon_id FROM compte_rendu_echantillon WHERE compte_rendu_id = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$req2 = $bdd->prepare("SELECT * FROM echantillon WHERE id = ?");
+			$req2->execute(array($data["echantillon_id"]));
+			while($data2 = $req2->fetch())
+			{
+				$echantillons[$i]["id"] = $data2["id"];
+				$echantillons[$i]["qte"] = $data2["qte"];
+				$echantillons[$i]["produit"] = json_decode(getProduitById($data2["id_produit"]));
+			}
+		}
+		return json_encode($echantillons);
+	}
+	
 	function getDosageById($id)
 	{
 		include("connexionBdd.php");

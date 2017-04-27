@@ -33,5 +33,6 @@
 	
 	require_once("fonctions.php");
 	
-	echo getCompteRenduById($_POST["compte_rendu_id"]);
+	//echo getCompteRenduById($_POST["compte_rendu_id"]);
+	echo getCompteRenduById(1);
 ?>
