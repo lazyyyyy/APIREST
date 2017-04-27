@@ -330,17 +330,16 @@
 		return json_encode($praticiens);
 	}
 	
-	function modifierPraticien($id, $nom, $prenom, $telFixe, $telPortable, $mail, $typePraticien, $specialite, $libelleLieu, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $dateDerniereVisiste)
+	function modifierPraticien($id, $nom, $prenom, $telFixe, $telPortable, $mail, $typePraticien, $specialite, $idLieu, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $dateDerniereVisiste)
 	{
 		include("connexionBdd.php");
 		$reponse = false;
-		$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region = ? WHERE id = ?");
-		$req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $libelleLieu));
-		if($data = $req->fetch())
+		$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region_id = ? WHERE id = ?");
+		$data = $req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $idLieu));
+		if($data)
 		{
 			$req = $bdd->prepare("UPDATE praticien SET nom = ?, prenom = ?, telephone_fixe = ?, telephone_portable = ?, mail = ?, id_type_praticien = ?, id_specialite = ?, id_lieu = ?, date_derniere_visite = ? WHERE id = ?");
-			$req->execute(array($nom, $prenom, $telFixe, $telPortable, $mail, $typePraticien, $specialite, $libelleLieu, $dateDerniereVisiste, $id));
-			$data2 = $req->fetch();
+			$data2 = $req->execute(array($nom, $prenom, $telFixe, $telPortable, $mail, $typePraticien, $specialite, $idLieu, $dateDerniereVisiste, $id));
 			$reponse = $data2;
 		}
 		
@@ -373,8 +372,8 @@
 		$i = 0;
 		
 		$req = $bdd->prepare("SELECT * FROM produit WHERE id = ?");
-		$req->execute(array($id));
-		if($data = $req->fetch())
+		$data = $req->execute(array($id));
+		if($data)
 		{
 			$produit["id"] = $data["id"];
 			$produit["libelle"] = $data["libelle"];
