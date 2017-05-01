@@ -14,11 +14,31 @@
 		return json_encode($data);
 	}
 	
+	function getPjByIdFrais($id)
+	{
+		include("connexionBdd.php");
+		$pj = null;
+		$i = 0;
+		
+		$req = $bdd->prepare("SELECT * FROM justificatif WHERE id_frais = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$pj[$i]["id"] = $data["id"];
+			$pj[$i]["url"] = $data["url"];
+			$pj[$i]["libelle"] = $data["libelle"];
+			
+			$i++;
+		}
+		
+		return json_encode($pj);
+	}
+	
 	function addFrais($montant, $commentaire, $date, $id_utilisateur, $id_type_frais)
 	{
 		include("connexionBdd.php");
 		try{
-			$req = $bdd->prepare("INSERT INTO frais(montant, commentaire, date, id_utilisateur, id_type_frais) VALUES(?, ?, ?, ?, ?)");
+			$req = $bdd->prepare("INSERT INTO frais(montant, commentaire, date, id_utilisateur, id_type_frais, date_creation) VALUES(?, ?, ?, ?, ?, NOW())");
 			$data = $req->execute(array($montant, $commentaire, $date, $id_utilisateur, $id_type_frais));
 		}catch(Exception $e)
 		{
@@ -41,6 +61,48 @@
 		
 		return json_encode($idFrais);
 	}
+	
+	function getFrais()
+	{
+		include("connexionBdd.php");
+		$frais = null;
+		$i = 0;
+		$req = $bdd->query("SELECT * FROM frais ORDER BY date_creation DESC");
+		while($data = $req->fetch())
+		{
+			$frais[$i]["id"] = $data["id"];
+			$frais[$i]["montant"] = $data["montant"];
+			$frais[$i]["commentaire"] = $data["commentaire"];
+			$frais[$i]["date"] = $data["date"];
+			$frais[$i]["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
+			$frais[$i]["type_frais"] = json_decode(getTypeDeFraisById($data["id_type_frais"]));
+			$frais[$i]["date_creation"] = $data["date_creation"];
+			
+			$i++;
+		}
+		
+		return json_encode($frais);
+	}
+	
+	function getFraisById($id)
+	{
+		include("connexionBdd.php");
+		$frais = null;
+		$req = $bdd->prepare("SELECT * FROM frais WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$frais["id"] = $data["id"];
+			$frais["montant"] = $data["montant"];
+			$frais["commentaire"] = $data["commentaire"];
+			$frais["date"] = $data["date"];
+			$frais["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
+			$frais["type_frais"] = json_decode(getTypeDeFraisById($data["id_type_frais"]));
+			$frais["date_creation"] = $data["date_creation"];
+		}
+		
+		return json_encode($frais);
+	}
 
 	
 	function getTypesDeFrais() //retourne la liste de tous les types de frais
@@ -59,6 +121,22 @@
 		}
 		
 		return json_encode($typesDeFrais);
+	}
+	
+	function getTypeDeFraisById($id)
+	{
+		include("connexionBdd.php");
+		$typeFrais = null;
+		$req = $bdd->prepare("SELECT * FROM type_frais WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$typeFrais["id"] = $data["id"];
+			$typeFrais["libelle"] = $data["libelle"];
+			$typeFrais["description"] = $data["description"];
+		}
+		
+		return json_encode($typeFrais);
 	}
 
 	function getFamilleProduitById($id)
