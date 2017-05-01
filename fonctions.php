@@ -130,6 +130,20 @@
 		return json_encode($labo);
 	}
 	
+	function addLieu($libelle, $adresse, $cp, $ville, $pays, $region_id)
+	{
+		include("connexionBdd.php");
+		try{
+			$req = $bdd->prepare("INSERT INTO lieu(libelle, adresse, cp, ville, pays, region_id) VALUES(?, ?, ?, ?, ?, ?)");
+			$data = $req->execute(array($libelle, $adresse, $cp, $ville, $pays, $region_id));
+		}catch(Exception $e)
+		{
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
 	function getLieuById($id)
 	{
 		include("connexionBdd.php");
@@ -158,8 +172,8 @@
 		$i = 0;
 		$lieu = null;
 		
-		$req = $bdd->prepare("SELECT * FROM lieu WHERE UCASE(libelle) LIKE ? OR UCASE(ville) LIKE ? OR UCASE(pays) LIKE ? OR UCASE(adresse) LIKE ? OR UCASE(cp) LIKE ?");
-		$req->execute(array($mot, $mot, $mot, $mot, $mot));
+		$req = $bdd->prepare("SELECT * FROM lieu WHERE UCASE(libelle) LIKE ?");
+		$req->execute(array($mot));
 		while($data = $req->fetch())
 		{
 			$lieu[$i]["id"] = $data["id"];
@@ -169,7 +183,7 @@
 			$lieu[$i]["ville"] = $data["ville"];
 			$lieu[$i]["pays"] = $data["pays"];
 			
-			$lieu[$i]["region"] = json_decode(getRegionById($data["id"]));
+			$lieu[$i]["region"] = json_decode(getRegionById($data["region_id"]));
 			
 			$i++;
 		}
@@ -341,6 +355,25 @@
 			$req = $bdd->prepare("UPDATE praticien SET nom = ?, prenom = ?, telephone_fixe = ?, telephone_portable = ?, mail = ?, id_type_praticien = ?, id_specialite = ?, id_lieu = ?, date_derniere_visite = ? WHERE id = ?");
 			$data2 = $req->execute(array($nom, $prenom, $telFixe, $telPortable, $mail, $typePraticien, $specialite, $idLieu, $dateDerniereVisiste, $id));
 			$reponse = $data2;
+		}
+		
+		return json_encode($reponse);
+	}
+	
+	function addPraticien($nom, $prenom, $telFixe, $telPortable, $mail, $dateDerniereVisiste, $typePraticien, $specialite, $idLieu, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu)
+	{
+		include("connexionBdd.php");
+		try{
+			$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region_id = ? WHERE id = ?");
+			$data = $req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $idLieu));
+			if($data)
+			{
+				$req = $bdd->prepare("INSERT INTO praticien(nom, prenom, telephone_fixe, telephone_portable, mail, date_derniere_visite, id_type_praticien, id_specialite, id_lieu) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				$reponse = $req->execute(array($nom, $prenom, $telFixe, $telPortable, $mail, $dateDerniereVisiste, $typePraticien, $specialite, $idLieu));
+			}
+			
+		}catch(Exception $e){
+			$reponse = false;
 		}
 		
 		return json_encode($reponse);
