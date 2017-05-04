@@ -48,6 +48,29 @@
 		return json_encode($data);
 	}
 	
+	function removeFraisById($id)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("SELECT * FROM justificatif WHERE id_frais = ?");
+			$req->execute(array($id));
+			while($rep = $req->fetch())
+			{
+				$url = "../html/".$rep["url"];
+				unlink($url);
+				$req2 = $bdd->prepare("DELETE FROM justificatif WHERE id = ?");
+				$data2 = $req2->execute(array($rep["id"]));
+			}
+			$req = $bdd->prepare("DELETE FROM frais WHERE id = ?");
+			$data = $req->execute(array($id));
+		}catch(Exception $e){
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
 	function getIdFrais($montant, $commentaire, $date, $id_utilisateur, $id_type_frais)
 	{
 		include("connexionBdd.php");
@@ -190,6 +213,25 @@
 		return json_encode($fonction);
 	}
 	
+	function getFonctionUtilisateurByName($nom)
+	{
+		include("connexionBdd.php");
+		$fonctions = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		$req = $bdd->prepare("SELECT * FROM fonction_utilisateur WHERE libelle LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$fonctions[$i]["id"] = $data["id"];
+			$fonctions[$i]["libelle"] = $data["libelle"];
+			$fonctions[$i]["description"] = $data["description"];
+			$i++;
+		}
+		
+		return json_encode($fonctions);
+	}
+	
 	function getLaboratoireById($id)
 	{
 		include("connexionBdd.php");
@@ -206,6 +248,23 @@
 		}
 		
 		return json_encode($labo);
+	}
+	
+	function getLaboratoireByName($nom)
+	{
+		include("connexionBdd.php");
+		$labos = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		$req = $bdd->prepare("SELECT * FROM laboratoire WHERE nom LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$labos[$i] = json_decode(getLaboratoireById($data["id"]));
+			$i++;
+		}
+		
+		return json_encode($labos);
 	}
 	
 	function addLieu($libelle, $adresse, $cp, $ville, $pays, $region_id)
@@ -357,6 +416,22 @@
 		return json_encode($parc_auto);
 	}
 	
+	function getParcAutoByIdRegion($id_region)
+	{
+		include("connexionBdd.php");
+		$parcs_autos = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT parc_automobile.id id FROM parc_automobile JOIN lieu ON lieu.id = parc_automobile.id_lieu WHERE lieu.region_id = ?");
+		$req->execute(array($id_region));
+		while($data = $req->fetch())
+		{
+			$parcs_autos[$i] = json_decode(getParcAutoById($data["id"]));
+			$i++;
+		}
+		
+		return json_encode($parcs_autos);
+	}
+	
 	function getPraticienById($id)
 	{
 		include("connexionBdd.php");
@@ -483,8 +558,8 @@
 		$i = 0;
 		
 		$req = $bdd->prepare("SELECT * FROM produit WHERE id = ?");
-		$data = $req->execute(array($id));
-		if($data)
+		$req->execute(array($id));
+		if($data = $req->fetch())
 		{
 			$produit["id"] = $data["id"];
 			$produit["libelle"] = $data["libelle"];
@@ -493,6 +568,7 @@
 			
 			$produit["type_individu"] = $data["type_individu"];
 			
+			$produit["composant"] = null;
 			$i = 0;
 			$req2 = $bdd->prepare("SELECT * FROM produit_composants WHERE produit_id = ?");
 			$req2->execute(array($data["id"]));
@@ -550,6 +626,22 @@
 			$i++;
 		}
 		return json_encode($produit);
+	}
+	
+	function removeProduitById($id)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM produit_composants WHERE produit_id = ?");
+			$data = $req->execute(array($id));
+			$req = $bdd->prepare("DELETE FROM produit WHERE id = ?");
+			$data = $req->execute(array($id));
+		}catch(Exception $e){
+			$data = false;
+		}
+		
+		return json_encode($data);
 	}
 	
 	function getRdvById($id)
@@ -786,6 +878,8 @@
 			$vehicule["immatricule"] = $data["immatricule"];
 			$vehicule["description"] = $data["description"];
 			$vehicule["kilometrage"] = $data["kilometrage"];
+			$vehicule["modele"] = $data["modele"];
+			$vehicule["marque"] = $data["marque"];
 			
 			if($data["disponible"] == 1)
 			{
@@ -828,6 +922,22 @@
 		}
 		
 		return json_encode($vehicule);
+	}
+	
+	function getVehiculeByParcAutoId($id_parc_auto)
+	{
+		include("connexionBdd.php");
+		$vehicules = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT immatricule FROM vehicule WHERE id_parc_automobile = ?");
+		$req->execute(array($id_parc_auto));
+		while($data = $req->fetch())
+		{
+			$vehicules[$i] = json_decode(getVehicule($data["immatricule"]));
+			$i++;
+		}
+		
+		return json_encode($vehicules);
 	}
 	
 	function hashage($mot)
@@ -1021,6 +1131,7 @@
 		
 		try
 		{
+			$utilisateur = null;
 			$req = $bdd->prepare("INSERT INTO utilisateur(nom, prenom, date_naissance, date_embauche, date_creation, date_modification, telephone_portable, telephone_fixe, mail, id_laboratoire, id_service_comptable, id_fonction_utilisateur, id_lieu) VALUES(?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?)");
 			$data = $req->execute(array($nom, $prenom, $date_naissance, $date_embauche, $telephone_portable, $telephone_fixe, $mail, $id_laboratoire, $id_service_comptable, $id_fonction_utilisateur, $id_lieu));
 			
@@ -1032,6 +1143,7 @@
 			}
 			
 			$login = strtolower($prenom).".".strtolower($nom);
+			$utilisateur["login"] = $login;
 			
 			$mois = substr($date_naissance, 5, 2);
 			switch($mois)
@@ -1062,6 +1174,7 @@
 				break;
 			}
 		$mdp = substr($date_naissance, 8, 2)."-".$mois."-".substr($date_naissance, 0, 4);
+		$utilisateur["mdp"] = $mdp;
 		//mot de passe créé automatiquement = "06-may-2005" par exemple, soit le la date d'anniversaire avec: jour-mois(3 premières lettres en anglais)-année
 		
 		
@@ -1071,14 +1184,17 @@
 		
 		$req = $bdd->prepare("INSERT INTO connexion(login, mdp, id_utilisateur) VALUES(?, ?, ?)");
 		$data = $req->execute(array($login, $mdp, $id_utilisateur));
+		$utilisateur["creation"] = true;
 			
 		}catch(Exception $e)
 		{
 			echo $e->getMessage();
-			$data = false;
+			$utilisateur["creation"] = false;
+			$utilisateur["login"] = null;
+			$utilisateur["mdp"] = null;
 		}
 		
-		return json_encode($data);
+		return json_encode($utilisateur);
 	}
 	
 	function addVehicule($immatricule, $description, $kilometrage, $disponible, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule)
@@ -1144,6 +1260,22 @@
 		}
 		
 		return json_encode($compteRendu);
+	}
+	
+	function getCompteRenduByIdProduit($idProduit)
+	{
+		include("connexionBdd.php");
+		$comptesRendus = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id_compte_rendu idCR FROM compte_rendu_produit WHERE id_produit = ?");
+		$req->execute(array($idProduit));
+		while($data = $req->fetch())
+		{
+			$comptesRendus[$i] = json_decode(getCompteRenduById($data["idCR"]));
+			$i++;
+		}
+		
+		return json_encode($comptesRendus);
 	}
 	
 	function getEchantillonByCompteRenduId($id)

@@ -66,5 +66,5 @@
 	}*/
 	require_once("fonctions.php");
 	
-	echo addUtilisateur($_POST["nom"], $_POST["prenom"], $_POST["date_naissance"], $_POST["date_embauche"], $_POST["telephone_portable"], $_POST["telephone_fixe"], $_POST["email"], $_POST["id_laboratoire"], $_POST["id_service_comptable"], $_POST["id_fonction_utilisateur"], $_POST["id_lieu"]);
+	echo addUtilisateur($_POST["nom"], $_POST["prenom"], $_POST["date_naissance"], $_POST["date_embauche"], $_POST["telephone_portable"], $_POST["telephone_fixe"], $_POST["email"], $_POST["id_laboratoire"], null, $_POST["id_fonction_utilisateur"], null);
 ?>
