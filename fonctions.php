@@ -1,6 +1,48 @@
 <?php
 	//J'ai copié toutes les fonctions pour ne pas appeler le "echo" des fonctions de l'API
 	
+	function getIdentifiantByUtilisateurId($id)
+	{
+		include("connexionBdd.php");
+		$identifiant = null;
+		$req = $bdd->prepare("SELECT login FROM connexion WHERE id_utilisateur = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$identifiant = $data["login"];
+		}
+		return json_encode($identifiant);
+	}
+	
+	function modifierLogin($login, $id_utilisateur)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("UPDATE connexion SET login = ? WHERE id_utilisateur = ?");
+			$data = $req->execute(array($login, $id_utilisateur));
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
+	function modifierMdp($mdp, $id_utilisateur)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$mdp = json_decode(hashage($mdp));
+			$req = $bdd->prepare("UPDATE connexion SET mdp = ? WHERE id_utilisateur = ?");
+			$data = $req->execute(array($mdp, $id_utilisateur));
+		}catch(Exception $e)
+		{
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
 	function addPj($url, $libelle, $id_frais)
 	{
 		include("connexionBdd.php");
@@ -124,6 +166,21 @@
 			$frais["date_creation"] = $data["date_creation"];
 		}
 		
+		return json_encode($frais);
+	}
+	
+	function getFraisByUtilisateurId($id)
+	{
+		include("connexionBdd.php");
+		$frais = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM frais WHERE id_utilisateur = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$frais[$i] = json_decode(getFraisById($data["id"]));
+			$i++;
+		}
 		return json_encode($frais);
 	}
 
@@ -866,6 +923,35 @@
 		return json_encode($user);
 	}
 	
+	function getUtilisateurByName($nom)
+	{
+		include("connexionBdd.php");
+		$users = null;
+		$i = 0;
+		$nom = "%".strtoupper($nom)."%";
+		$req = $bdd->prepare("SELECT id FROM utilisateur WHERE UCASE(nom) LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$users[$i] = json_decode(getUtilisateurById($data["id"]));
+			$i++;
+		}
+		return json_encode($users);
+	}
+	
+	function modifierUtilisateur($id, $nom, $prenom, $dateNaissance, $dateEmbauche, $telFixe, $telPortable, $mail, $idFonction, $idLabo)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("UPDATE utilisateur SET nom = ?, prenom = ?, date_naissance = ?, date_embauche = ?, date_modification = NOW(), telephone_fixe = ?, telephone_portable = ?, mail = ?, id_fonction_utilisateur = ?, id_laboratoire = ? WHERE id = ?");
+			$data = $req->execute(array($nom, $prenom, $dateNaissance, $dateEmbauche, $telFixe, $telPortable, $mail, $idFonction, $idLabo, $id));
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
 	function getVehicule($immatricule)
 	{
 		include("connexionBdd.php");
@@ -961,6 +1047,7 @@
 			$user["id"] = $data["id"];
 			$user["message"] = "Bienvenue";
 		}else{
+			$user["id"] = null;
 			$user["message"] = "N'arrive pas a se connecter";
 		}
 		return json_encode($user);
@@ -1275,6 +1362,21 @@
 			$i++;
 		}
 		
+		return json_encode($comptesRendus);
+	}
+	
+	function getCompteRenduByUtilisateurId($id)
+	{
+		include("connexionBdd.php");
+		$comptesRendus = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM compte_rendu_visite WHERE id_utilisateur = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$comptesRendus[$i] = json_decode(getCompteRenduById($data["id"]));
+			$i++;
+		}
 		return json_encode($comptesRendus);
 	}
 	

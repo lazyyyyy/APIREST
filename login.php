@@ -3,6 +3,7 @@
 	$loginRecupere = $_POST['login'];
 	$mdpRecupere = $_POST['mdp'];
 	
+	
 	/*function connexion($login, $mdp)
 	{
 		include("connexionBdd.php");
