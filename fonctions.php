@@ -174,7 +174,7 @@
 		include("connexionBdd.php");
 		$frais = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT id FROM frais WHERE id_utilisateur = ?");
+		$req = $bdd->prepare("SELECT id FROM frais WHERE id_utilisateur = ? ORDER BY date_creation DESC");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
@@ -234,6 +234,22 @@
 		}
 		
 		return json_encode($famille);
+	}
+	
+	function getFamilleProduitByName($nom)
+	{
+		include("connexionBdd.php");
+		$familles = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		$req = $bdd->prepare("SELECT id FROM famille_produit WHERE libelle LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$familles[$i] = json_decode(getFamilleProduitById($data["id"]));
+			$i++;
+		}
+		return json_encode($familles);
 	}
 	
 	function getFonctionPraticienById($id)
@@ -420,6 +436,20 @@
 		}
 		
 		return json_encode($motifs);
+	}
+	
+	function getParcAuto()
+	{
+		include("connexionBdd.php");
+		$parcsAutos = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM parc_automobile");
+		while($data = $req->fetch())
+		{
+			$parcsAutos[$i] = json_decode(getParcAutoById($data["id"]));
+			$i++;
+		}
+		return json_encode($parcsAutos);
 	}
 	
 	function getParcAutoById($id)
@@ -966,6 +996,7 @@
 			$vehicule["kilometrage"] = $data["kilometrage"];
 			$vehicule["modele"] = $data["modele"];
 			$vehicule["marque"] = $data["marque"];
+			$vehicule["image"] = $data["image"];
 			
 			if($data["disponible"] == 1)
 			{
@@ -1015,7 +1046,7 @@
 		include("connexionBdd.php");
 		$vehicules = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT immatricule FROM vehicule WHERE id_parc_automobile = ?");
+		$req = $bdd->prepare("SELECT immatricule FROM vehicule WHERE id_parc_automobile = ? AND disponible = 1");
 		$req->execute(array($id_parc_auto));
 		while($data = $req->fetch())
 		{
@@ -1131,8 +1162,8 @@
 		$req->execute(array($id_utilisateur));
 		if($data = $req->fetch())
 		{
-			$req = $bdd->prepare("UPDATE vehicule SET disponible = 1 WHERE immatricule = ?");
-			$reponse = $req->execute(array($data["immatricule"]));
+			$req = $bdd->prepare("UPDATE vehicule SET disponible = 1, id_parc_automobile = ? WHERE immatricule = ?");
+			$reponse = $req->execute(array($id_parc_automobile_arrivee, $data["immatricule_vehicule"]));
 			if($reponse)
 			{
 				$req = $bdd->prepare("UPDATE vehicule_utilisateur SET date_arrivee = NOW(), id_parc_automobile_arrivee = ?, distance_parcourue = ? WHERE id_utilisateur  = ? AND date_arrivee IS NULL");
@@ -1173,20 +1204,68 @@
 							$reponse = $req->execute(array($id_utilisateur, $immatricule, $id_parc_auto));
 						}
 					}
+					else{
+						return json_encode(0); //retourne 0 si le vehicule n'est pas disponible
+					}
 				}
+			}
+			else{
+				return json_encode(null); // retourne null si l'utilisateur possède déjà un véhicule
 			}
 		}
 		return json_encode($reponse);
 	}
 	
-	function addCompteRendu($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $autre_motif, $id_praticien, $id_produit, $id_utilisateur)
+	function getVehiculesReservesByUtilisateurId($id_utilisateur)
+	{
+		include("connexionBdd.php");
+		$reservations = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT * FROM vehicule_utilisateur WHERE id_utilisateur = ? ORDER BY date_depart");
+		$req->execute(array($id_utilisateur));
+		while($data = $req->fetch())
+		{
+			$reservations[$i]["id"] = $data["id"];
+			$reservations[$i]["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
+			$reservations[$i]["vehicule"] = json_decode(getVehicule($data["immatricule_vehicule"]));
+			$reservations[$i]["date_depart"] = $data["date_depart"];
+			$reservations[$i]["date_arrivee"] = $data["date_arrivee"];
+			$reservations[$i]["parc_auto_depart"] = json_decode(getParcAutoById($data["id_parc_automobile_depart"]));
+			$reservations[$i]["parc_auto_arrivee"] = json_decode(getParcAutoById($data["id_parc_automobile_arrivee"]));
+			$reservations[$i]["distance_parcourue"] = $data["distance_parcourue"];
+			$i++;
+		}
+		return json_encode($reservations);
+	}
+	
+	function getReservationById($id)
+	{
+		include("connexionBdd.php");
+		$reservation = null;
+		$req = $bdd->prepare("SELECT * FROM vehicule_utilisateur WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$reservation["id"] = $data["id"];
+			$reservation["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
+			$reservation["vehicule"] = json_decode(getVehicule($data["immatricule_vehicule"]));
+			$reservation["date_depart"] = $data["date_depart"];
+			$reservation["date_arrivee"] = $data["date_arrivee"];
+			$reservation["parc_auto_depart"] = json_decode(getParcAutoById($data["id_parc_automobile_depart"]));
+			$reservation["parc_auto_arrivee"] = json_decode(getParcAutoById($data["id_parc_automobile_arrivee"]));
+			$reservation["distance_parcourue"] = $data["distance_parcourue"];
+		}
+		return json_encode($reservation);
+	}
+	
+	function addCompteRendu($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $autre_motif, $id_praticien, $id_produit, $id_utilisateur, $nb_echantillons)
 	{
 		include("connexionBdd.php");
 		
 		try
 		{
-			$req = $bdd->prepare("INSERT INTO compte_rendu_visite(date, bilan, coefficient_confiance, coefficient_notoriete, coefficient_prescription, id_motif, id_praticien, id_produit, id_utilisateur) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
-			$data = $req->execute(array($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $id_praticien, $id_produit, $id_utilisateur));
+			$req = $bdd->prepare("INSERT INTO compte_rendu_visite(date, bilan, coefficient_confiance, coefficient_notoriete, coefficient_prescription, id_motif, id_praticien, id_produit, id_utilisateur, nb_echantillons, date_creation) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+			$data = $req->execute(array($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $id_praticien, $id_produit, $id_utilisateur, $nb_echantillons));
 		}
 		catch(Exception $e){
 			$data = false;
@@ -1318,6 +1397,36 @@
 		return json_encode($composant);
 	}
 	
+	function getComposantByName($nom)
+	{
+		include("connexionBdd.php");
+		$composants = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		$req = $bdd->prepare("SELECT id FROM composant WHERE libelle LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$composants[$i] = json_decode(getComposantById($data["id"]));
+			$i++;
+		}
+		return json_encode($composants);
+	}
+	
+	function getComptesRendus()
+	{
+		include("connexionBdd.php");
+		$comptesRendus = null;
+		$i = 0;
+		$req = $bdd->query("SELECT id FROM compte_rendu_visite ORDER BY date_creation DESC");
+		while($data = $req->fetch())
+		{
+			$comptesRendus[$i] = json_decode(getCompteRenduById($data["id"]));
+			$i++;
+		}
+		return json_encode($comptesRendus);
+	}
+	
 	function getCompteRenduById($id)
 	{
 		include("connexionBdd.php");
@@ -1330,10 +1439,13 @@
 		{
 			$compteRendu["id"] = $data["id"];
 			$compteRendu["date"] = $data["date"];
+			$compteRendu["date_creation"] = $data["date_creation"];
 			$compteRendu["bilan"] = $data["bilan"];
 			$compteRendu["coef_confiance"] = $data["coefficient_confiance"];
 			$compteRendu["coef_notoriete"] = $data["coefficient_notoriete"];
 			$compteRendu["coef_prescription"] = $data["coefficient_prescription"];
+			$compteRendu["nb_echantillons"] = $data["nb_echantillons"];
+			
 			
 			$compteRendu["motif"] = json_decode(getMotifById($data["id_motif"]));
 			
@@ -1341,7 +1453,7 @@
 			
 			$compteRendu["praticien"] = json_decode(getPraticienById($data["id_praticien"]));
 			
-			$compteRendu["produits"] = json_decode(getProduitByCompteRenduId($data["id"]));
+			$compteRendu["produit"] = json_decode(getProduitById($data["id_produit"]));
 			
 			$compteRendu["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
 		}
@@ -1370,7 +1482,7 @@
 		include("connexionBdd.php");
 		$comptesRendus = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT id FROM compte_rendu_visite WHERE id_utilisateur = ?");
+		$req = $bdd->prepare("SELECT id FROM compte_rendu_visite WHERE id_utilisateur = ? ORDER BY date_creation DESC");
 		$req->execute(array($id));
 		while($data = $req->fetch())
 		{
