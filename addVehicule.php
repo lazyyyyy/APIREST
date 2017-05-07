@@ -18,5 +18,5 @@
 	}*/
 	require_once("fonctions.php");
 	
-	echo addVehicule($_POST["immatricule_vehicule"], $_POST["description"], $_POST["kilometrage"], $_POST["disponible"], $_POST["equipement"], $_POST["id_parc_automobile"], $_POST["id_energie"], $_POST["id_type_vehicule"]);
+	echo addVehicule($_POST["immatricule_vehicule"], $_POST["id_marque"], $_POST["id_model"], $_POST["description"], $_POST["kilometrage"], $_POST["equipement"], $_POST["id_parc_automobile"], $_POST["id_energie"], $_POST["id_type_vehicule"], $_POST["image"]);
 ?>

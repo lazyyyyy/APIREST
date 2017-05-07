@@ -438,6 +438,24 @@
 		return json_encode($motifs);
 	}
 	
+	function addParcAuto($libelle, $id_lieu, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region_id = ? WHERE id = ?");
+			$data = $req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $id_lieu));
+			if($data)
+			{
+				$req = $bdd->prepare("INSERT INTO parc_automobile(libelle, id_lieu) VALUES(?, ?)");
+				$data = $req->execute(array($libelle, $id_lieu));
+			}
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
 	function getParcAuto()
 	{
 		include("connexionBdd.php");
@@ -450,6 +468,19 @@
 			$i++;
 		}
 		return json_encode($parcsAutos);
+	}
+	
+	function removeParcAutoById($id)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("DELETE FROM parc_automobile WHERE id = ?");
+			$data = $req->execute(array($id));
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
 	}
 	
 	function getParcAutoById($id)
@@ -635,6 +666,60 @@
 		}
 		
 		return json_encode($produits);
+	}
+	
+	function addProduit($libelle, $effets, $contre_indications, $dosage, $type_individu, $id_laboratoire, $id_famille, $composants)
+	{
+		include("connexionBdd.php");
+		$composants = json_decode($composants);
+		$data = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO produit(libelle, effets, contre_indications, dosage, type_individu, id_laboratoire, id_famille_produit) VALUES(?, ?, ?, ?, ?, ?, ?)");
+			$data = $req->execute(array($libelle, $effets, $contre_indications, $dosage, $type_individu, $id_laboratoire, $id_famille));
+			if($data)
+			{
+				$req = $bdd->prepare("SELECT id FROM produit WHERE libelle = ? AND effets = ? AND contre_indications = ? AND dosage = ? AND type_individu = ? AND id_laboratoire = ? AND id_famille_produit = ?");
+				$req->execute(array($libelle, $effets, $contre_indications, $dosage, $type_individu, $id_laboratoire, $id_famille));
+				if($result = $req->fetch())
+				{
+					$idProduit = $result["id"];
+					for($i = 0; $i < sizeof($composants); $i++)
+					{
+						$req = $bdd->prepare("INSERT INTO produit_composants(produit_id, composant_id) VALUES(?, ?)");
+						$data = $req->execute(array($idProduit, $composants[$i]));
+					}
+				}
+			}
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
+	function modiferProduit($id, $libelle, $effets, $contre_indications, $dosage, $type_individu, $id_laboratoire, $id_famille, $composants)
+	{
+		include("connexionBdd.php");
+		$composants = json_decode($composants);
+		$data = false;
+		try{
+			$req = $bdd->prepare("UPDATE produit SET libelle = ?, effets = ?, contre_indications = ?, dosage = ?, type_individu = ?, id_laboratoire = ?, id_famille_produit = ? WHERE id = ?");
+			$data = $req->execute(array($libelle, $effets, $contre_indications, $dosage, $type_individu, $id_laboratoire, $id_famille, $id));
+			if($data){
+				$req = $bdd->prepare("DELETE FROM produit_composants WHERE produit_id = ?");
+				$data = $req->execute(array($id));
+				if($data)
+				{
+					for($i = 0; $i < sizeof($composants); $i++)
+					{
+						$req = $bdd->prepare("INSERT INTO produit_composants(produit_id, composant_id) VALUES(?, ?)");
+						$data = $req->execute(array($id, $composants[$i]));
+					}
+				}
+			}
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
 	}
 	
 	function getProduitById($id)
@@ -867,6 +952,68 @@
 		return json_encode($specialites);
 	}
 	
+	function getEnergieVehiculeByName($nom)
+	{
+		include("connexionBdd.php");
+		$energies = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		$req = $bdd->prepare("SELECT id FROM energie WHERE libelle LIKE ? ");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$energies[$i] = json_decode(getEnergieVehiculeById($data["id"]));
+			$i++;
+		}
+		return json_encode($energies);
+	}
+	
+	function getEnergieVehiculeById($id)
+	{
+		include("connexionBdd.php");
+		$energie = null;
+		$req = $bdd->prepare("SELECT * FROM energie WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$energie["id"] = $data["id"];
+			$energie["libelle"] = $data["libelle"];
+			$energie["description"] = $data["description"];
+		}
+		return json_encode($energie);
+	}
+	
+	function getTypeVehiculeByName($nom)
+	{
+		include("connexionBdd.php");
+		$typesVehicules = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		$req = $bdd->prepare("SELECT id FROM type_vehicule WHERE libelle LIKE ? ");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$typesVehicules[$i] = json_decode(getTypeVehiculeById($data["id"]));
+			$i++;
+		}
+		return json_encode($typesVehicules);
+	}
+	
+	function getTypeVehiculeById($id)
+	{
+		include("connexionBdd.php");
+		$typeVehicule = null;
+		$req = $bdd->prepare("SELECT * FROM type_vehicule WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$typeVehicule["id"] = $data["id"];
+			$typeVehicule["libelle"] = $data["libelle"];
+			$typeVehicule["description"] = $data["description"];
+		}
+		return json_encode($typeVehicule);
+	}
+	
 	function getTypeIndividuById($id)
 	{
 		include("connexionBdd.php");
@@ -982,6 +1129,66 @@
 		return json_encode($data);
 	}
 	
+	function getMarqueVehiculeById($id)
+	{
+		include("connexionBdd.php");
+		$marque = null;
+		$req = $bdd->prepare("SELECT * FROM vehicule_marque WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$marque["id"] = $data["id"];
+			$marque["libelle"] = $data["libelle"];
+		}
+		return json_encode($marque);
+	}
+	
+	function getMarquesVehiculesByName($nom)
+	{
+		include("connexionBdd.php");
+		$marques = null;
+		$i = 0;
+		$nom = "%".$nom."%";
+		$req = $bdd->prepare("SELECT id FROM vehicule_marque WHERE libelle LIKE ?");
+		$req->execute(array($nom));
+		while($data = $req->fetch())
+		{
+			$marques[$i] = json_decode(getMarqueVehiculeById($data["id"]));
+			$i++;
+		}
+		return json_encode($marques);
+	}
+	
+	function getModelVehiculeById($id)
+	{
+		include("connexionBdd.php");
+		$model = null;
+		$req = $bdd->prepare("SELECT * FROM vehicule_model WHERE id = ?");
+		$req->execute(array($id));
+		if($data = $req->fetch())
+		{
+			$model["id"] = $data["id"];
+			$model["libelle"] = $data["libelle"];
+			$model["marque"] = json_decode(getMarqueVehiculeById($data["id_marque"]));
+		}
+		return json_encode($model);
+	}
+	
+	function getModelsVehiculesByMarqueId($id)
+	{
+		include("connexionBdd.php");
+		$models = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM vehicule_model WHERE id_marque = ?");
+		$req->execute(array($id));
+		while($data = $req->fetch())
+		{
+			$models[$i] = json_decode(getModelVehiculeById($data["id"]));
+			$i++;
+		}
+		return json_encode($models);
+	}
+	
 	function getVehicule($immatricule)
 	{
 		include("connexionBdd.php");
@@ -994,8 +1201,8 @@
 			$vehicule["immatricule"] = $data["immatricule"];
 			$vehicule["description"] = $data["description"];
 			$vehicule["kilometrage"] = $data["kilometrage"];
-			$vehicule["modele"] = $data["modele"];
-			$vehicule["marque"] = $data["marque"];
+			$vehicule["modele"] = json_decode(getModelVehiculeById($data["id_model"]));
+			$vehicule["marque"] = json_decode(getMarqueVehiculeById($data["id_marque"]));
 			$vehicule["image"] = $data["image"];
 			
 			if($data["disponible"] == 1)
@@ -1039,6 +1246,20 @@
 		}
 		
 		return json_encode($vehicule);
+	}
+	
+	function getVehiculesListe()
+	{
+		include("connexionBdd.php");
+		$vehicules = null;
+		$i = 0;
+		$req = $bdd->query("SELECT immatricule FROM vehicule");
+		while($data = $req->fetch())
+		{
+			$vehicules[$i] = json_decode(getVehicule($data["immatricule"]));
+			$i++;
+		}
+		return json_encode($vehicules);
 	}
 	
 	function getVehiculeByParcAutoId($id_parc_auto)
@@ -1145,9 +1366,19 @@
 	function removeVehiculeByImmatricule($immatricule)
 	{
 		include("connexionBdd.php");
-		
-		$req = $bdd->prepare("DELETE FROM vehicule WHERE immatricule = ?");
-		$data = $req->execute(array($immatricule));
+		$data = false;
+		$req = $bdd->prepare("SELECT image FROM vehicule WHERE immatricule = ?");
+		$req->execute(array($immatricule));
+		if($data2 = $req->fetch())
+		{
+			$image = $data2["image"];
+			$result = unlink("../html/".$image);
+			if($result)
+			{
+				$req = $bdd->prepare("DELETE FROM vehicule WHERE immatricule = ?");
+				$data = $req->execute(array($immatricule));
+			}
+		}
 		
 		return json_encode($data);
 	}
@@ -1258,6 +1489,21 @@
 		return json_encode($reservation);
 	}
 	
+	function getReservationByParcAutoId($id)
+	{
+		include("connexionBdd.php");
+		$reservations = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM vehicule_utilisateur WHERE id_parc_automobile_depart = ? OR id_parc_automobile_arrivee = ?");
+		$req->execute(array($id, $id));
+		while($data = $req->fetch())
+		{
+			$reservations[$i] = json_decode(getReservationById($data["id"]));
+			$i++;
+		}
+		return json_encode($reservations);
+	}
+	
 	function addCompteRendu($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $autre_motif, $id_praticien, $id_produit, $id_utilisateur, $nb_echantillons)
 	{
 		include("connexionBdd.php");
@@ -1363,14 +1609,15 @@
 		return json_encode($utilisateur);
 	}
 	
-	function addVehicule($immatricule, $description, $kilometrage, $disponible, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule)
+	function addVehicule($immatricule, $marque, $model, $description, $kilometrage, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule, $image)
 	{
 		include("connexionBdd.php");
 		
+		$data = false;
 		try
 		{
-			$req = $bdd->prepare("INSERT INTO vehicule(immatricule, description, kilometrage, disponible, equipement, id_parc_automobile, id_energie, id_type_vehicule) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-			$data = $req->execute(array($immatricule, $description, $kilometrage, $disponible, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule));
+			$req = $bdd->prepare("INSERT INTO vehicule(immatricule, id_marque, id_model, description, kilometrage, disponible, equipement, id_parc_automobile, id_energie, id_type_vehicule, image) VALUES(?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)");
+			$data = $req->execute(array($immatricule, $marque, $model, $description, $kilometrage, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule, $image));
 		}
 		catch(Excpetion $e)
 		{
@@ -1378,6 +1625,21 @@
 		}
 		
 		return json_encode($data);
+	}
+	
+	function getReservationsByImmatriculeVehicule($immatricule)
+	{
+		include("connexionBdd.php");
+		$reservations = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM vehicule_utilisateur WHERE immatricule_vehicule = ?");
+		$req->execute(array($immatricule));
+		while($data = $req->fetch())
+		{
+			$reservations[$i] = json_decode(getReservationById($data["id"]));
+			$i++;
+		}
+		return json_encode($reservations);
 	}
 	
 	function getComposantById($id)
