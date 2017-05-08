@@ -90,6 +90,20 @@
 		return json_encode($data);
 	}
 	
+	function modifierFrais($montant, $commentaire, $date, $id_type_frais, $id_frais)
+	{
+		include("connexionBdd.php");
+		try{
+			$req = $bdd->prepare("UPDATE frais SET montant = ?, commentaire = ?, date = ?, id_type_frais = ?, date_modification = NOW() WHERE id = ?");
+			$data = $req->execute(array($montant, $commentaire, $date, $id_type_frais, $id_frais));
+		}catch(Exception $e)
+		{
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
 	function removeFraisById($id)
 	{
 		include("connexionBdd.php");
@@ -142,6 +156,7 @@
 			$frais[$i]["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
 			$frais[$i]["type_frais"] = json_decode(getTypeDeFraisById($data["id_type_frais"]));
 			$frais[$i]["date_creation"] = $data["date_creation"];
+			$frais[$i]["date_modification"] = $data["date_modification"];
 			
 			$i++;
 		}
@@ -164,6 +179,7 @@
 			$frais["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
 			$frais["type_frais"] = json_decode(getTypeDeFraisById($data["id_type_frais"]));
 			$frais["date_creation"] = $data["date_creation"];
+			$frais["date_modification"] = $data["date_modification"];
 		}
 		
 		return json_encode($frais);
@@ -363,6 +379,7 @@
 		$req->execute(array($id));
 		if($data = $req->fetch())
 		{
+			$lieu["id"] = $data["id"];
 			$lieu["libelle"] = $data["libelle"];
 			$lieu["adresse"] = $data["adresse"];
 			$lieu["cp"] = $data["cp"];
@@ -449,6 +466,24 @@
 			{
 				$req = $bdd->prepare("INSERT INTO parc_automobile(libelle, id_lieu) VALUES(?, ?)");
 				$data = $req->execute(array($libelle, $id_lieu));
+			}
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
+	function modifierParcAuto($id, $libelle, $id_lieu, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region_id = ? WHERE id = ?");
+			$data = $req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $id_lieu));
+			if($data)
+			{
+				$req = $bdd->prepare("UPDATE parc_automobile SET libelle = ?, id_lieu = ? WHERE id = ?");
+				$data = $req->execute(array($libelle, $id_lieu, $id));
 			}
 		}catch(Exception $e){
 			$data = false;
@@ -1520,6 +1555,22 @@
 		return json_encode($data); //retourne true ou false
 	}
 	
+	function modifierCompteRendu($id, $date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $id_praticien, $id_produit, $nb_echantillons)
+	{
+		include("connexionBdd.php");
+		
+		try
+		{
+			$req = $bdd->prepare("UPDATE compte_rendu_visite SET date = ?, bilan = ?, coefficient_confiance = ?, coefficient_notoriete = ?, coefficient_prescription = ?, id_motif = ?, id_praticien = ?, id_produit = ?, nb_echantillons = ?, date_modification = NOW() WHERE id = ?");
+			$data = $req->execute(array($date, $bilan, $coef_confiance, $coef_notoriete, $coef_prescription, $id_motif, $id_praticien, $id_produit, $nb_echantillons, $id));
+		}
+		catch(Exception $e){
+			$data = false;
+		}
+		
+		return json_encode($data); //retourne true ou false
+	}
+	
 	function addRdv($date, $description, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur)
 	{
 		include("connexionBdd.php");
@@ -1627,6 +1678,83 @@
 		return json_encode($data);
 	}
 	
+	function modifierVehicule($ancien_immatricule, $nouveau_immatricule, $marque, $model, $description, $kilometrage, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule)
+	{
+		include("connexionBdd.php");
+		
+		$data = false;
+		try
+		{
+			$req = $bdd->prepare("UPDATE vehicule SET immatricule = ?, id_marque = ?, id_model = ?, description = ?, kilometrage = ?, equipement = ?, id_parc_automobile = ?, id_energie = ?, id_type_vehicule = ? WHERE immatricule = ?");
+			$data = $req->execute(array($nouveau_immatricule, $marque, $model, $description, $kilometrage, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule, $ancien_immatricule));
+		}
+		catch(Excpetion $e)
+		{
+			$data = false;
+		}
+		
+		return json_encode($data);
+	}
+	
+	function modifierImageVehicule($url, $immatricule)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("SELECT image FROM vehicule WHERE immatricule = ?");
+			$req->execute(array($immatricule));
+			if($reponse = $req->fetch())
+			{
+				$image = $reponse["image"];
+				$suppr = unlink("../".$image);
+				if($suppr)
+				{
+					$req = $bdd->prepare("UPDATE vehicule SET image = ? WHERE immatricule = ?");
+					$data = $req->execute(array($url, $immatricule));
+				}
+				else{
+					$data = false;
+				}
+			}
+			else{
+				$data = false;
+			}
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
+	function modifierPjFrais($destination, $nom_fichier, $idFrais)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("SELECT url FROM justificatif WHERE id_frais = ?");
+			$req->execute(array($idFrais));
+			while($reponse = $req->fetch())
+			{
+				$url = $reponse["url"];
+				$suppr = unlink("../".$url);
+				if($suppr)
+				{
+					$req = $bdd->prepare("DELETE FROM justificatif WHERE id_frais = ?");
+					$data = $req->execute(array($idFrais));
+					if($data)
+					{
+						$data = json_decode(addPj($destination, $nom_fichier, $idFrais));
+					}
+				}
+				else{
+					$data = false;
+				}
+			}
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
 	function getReservationsByImmatriculeVehicule($immatricule)
 	{
 		include("connexionBdd.php");
@@ -1702,6 +1830,7 @@
 			$compteRendu["id"] = $data["id"];
 			$compteRendu["date"] = $data["date"];
 			$compteRendu["date_creation"] = $data["date_creation"];
+			$compteRendu["date_modification"] = $data["date_modification"];
 			$compteRendu["bilan"] = $data["bilan"];
 			$compteRendu["coef_confiance"] = $data["coefficient_confiance"];
 			$compteRendu["coef_notoriete"] = $data["coefficient_notoriete"];
