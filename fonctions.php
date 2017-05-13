@@ -1238,7 +1238,7 @@
 			$vehicule["kilometrage"] = $data["kilometrage"];
 			$vehicule["modele"] = json_decode(getModelVehiculeById($data["id_model"]));
 			$vehicule["marque"] = json_decode(getMarqueVehiculeById($data["id_marque"]));
-			$vehicule["image"] = $data["image"];
+			$vehicule["image"] = json_decode(getImagesVehicule($immatricule));
 			
 			if($data["disponible"] == 1)
 			{
@@ -1281,6 +1281,57 @@
 		}
 		
 		return json_encode($vehicule);
+	}
+	
+	function getImagesVehicule($immatricule)
+	{
+		include("connexionBdd.php");
+		$images = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT * FROM vehicule_images WHERE immatricule_vehicule = ?");
+		$req->execute(array($immatricule));
+		while($data = $req->fetch())
+		{
+			$images[$i]["id"] = $data["id"];
+			$images[$i]["immatricule_vehicule"] = $data["immatricule_vehicule"];
+			$images[$i]["image"] = $data["image"];
+			$i++;
+		}
+		return json_encode($images);
+	}
+	
+	function removeImageVehicule($id)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("SELECT image FROM vehicule_images WHERE id = ?");
+			$req->execute(array($id));
+			if($data = $req->fetch())
+			{
+				$image = $data["image"];
+				unlink("../".$image);
+			}
+			$req = $bdd->prepare("DELETE FROM vehicule_images WHERE id = ?");
+			$req->execute(array($id));
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
+	function addImageVehicule($destination, $immatricule)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("INSERT INTO vehicule_images(immatricule_vehicule, image) VALUES(?, ?)");
+			$data = $req->execute(array($immatricule, $destination));
+		}catch(Exception $e){
+			$data = false;
+		}
+		
+		return json_encode($data);
 	}
 	
 	function getVehiculesListe()
@@ -1402,19 +1453,23 @@
 	{
 		include("connexionBdd.php");
 		$data = false;
-		$req = $bdd->prepare("SELECT image FROM vehicule WHERE immatricule = ?");
-		$req->execute(array($immatricule));
-		if($data2 = $req->fetch())
-		{
-			$image = $data2["image"];
-			$result = unlink("../html/".$image);
-			if($result)
+		try{
+			$req = $bdd->prepare("SELECT * FROM vehicule_images WHERE immatricule_vehicule = ?");
+			$req->execute(array($immatricule));
+			while($data = $req->fetch())
 			{
-				$req = $bdd->prepare("DELETE FROM vehicule WHERE immatricule = ?");
-				$data = $req->execute(array($immatricule));
+				$image = $data["image"];
+				unlink("../html/".$image);
 			}
+			$req = $bdd->prepare("DELETE FROM vehicule_images WHERE immatricule_vehicule = ?");
+			$req->execute(array($immatricule));
+			$req = $bdd->prepare("DELETE FROM vehicule WHERE immatricule = ?");
+			$data = $req->execute(array($immatricule));
+		}catch(Exception $e)
+		{
+			$data = false;
 		}
-		
+	
 		return json_encode($data);
 	}
 	
@@ -1667,8 +1722,8 @@
 		$data = false;
 		try
 		{
-			$req = $bdd->prepare("INSERT INTO vehicule(immatricule, id_marque, id_model, description, kilometrage, disponible, equipement, id_parc_automobile, id_energie, id_type_vehicule, image) VALUES(?, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)");
-			$data = $req->execute(array($immatricule, $marque, $model, $description, $kilometrage, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule, $image));
+			$req = $bdd->prepare("INSERT INTO vehicule(immatricule, id_marque, id_model, description, kilometrage, disponible, equipement, id_parc_automobile, id_energie, id_type_vehicule) VALUES(?, ?, ?, ?, ?, 1, ?, ?, ?, ?)");
+			$data = $req->execute(array($immatricule, $marque, $model, $description, $kilometrage, $equipement, $id_parc_automobile, $id_energie, $id_type_vehicule));
 		}
 		catch(Excpetion $e)
 		{
