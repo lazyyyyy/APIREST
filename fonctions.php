@@ -1,6 +1,44 @@
 <?php
 	//J'ai copié toutes les fonctions pour ne pas appeler le "echo" des fonctions de l'API
 	
+	function getRdvUtilisateurByDate($id_utilisateur, $date)
+	{
+		include("connexionBdd.php");
+		$rdv = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT * FROM rdv WHERE DATE_FORMAT(date, '%Y-%m-%d') = ? AND id_utilisateur = ?");
+		$req->execute(array($date, $id_utilisateur));
+		while($data = $req->fetch())
+		{
+			$rdv[$i]["id"] = $data["id"];
+			$rdv[$i]["date"] = $data["date"];
+			$rdv[$i]["titre"] = $data["titre"];
+			$rdv[$i]["description"] = $data["description"];
+			$rdv[$i]["praticien"] = json_decode(getPraticienById($data["id_praticien"]));
+			$rdv[$i]["lieu"] = json_decode(getLieuById($data["id_lieu"]));
+			$rdv[$i]["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
+			
+			$i++;
+		}
+		
+		return json_encode($rdv);
+	}
+	
+	function getRdvUtilisateurByAnnee($annee, $id_utilisateur)
+	{
+		include("connexionBdd.php");
+		$rdv = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM rdv WHERE DATE_FORMAT(date, '%Y') = ? AND id_utilisateur = ?");
+		$req->execute(array($annee, $id_utilisateur));
+		while($data = $req->fetch())
+		{
+			$rdv[$i] = json_decode(getRdvById($data["id"]));
+			$i++;
+		}
+		return json_encode($rdv);
+	}
+	
 	function getIdentifiantByUtilisateurId($id)
 	{
 		include("connexionBdd.php");
@@ -862,12 +900,12 @@
 		if($data = $req->fetch())
 		{
 			$rdv["id"] = $data["id"];
+			$rdv["titre"] = $data["titre"];
 			$rdv["date"] = $data["date"];
 			$rdv["description"] = $data["description"];
 			
 			$rdv["praticien"] = json_decode(getPraticienById($data["id_praticien"]));
 			
-			$rdv["visiteur"] = json_decode(getUtilisateurById($data["id_visiteur"]));
 			$rdv["utilisateur"] = json_decode(getUtilisateurById($data["id_utilisateur"]));
 			
 			$rdv["lieu"] = json_decode(getLieuById($data["id_lieu"]));
