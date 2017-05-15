@@ -159,10 +159,10 @@
 			}
 		}catch(Exception $e)
 		{
-			$data = false;
+			$data = "Erreur";
 		}
 		
-		$data = "Erreur";
+		return json_encode($data);
 	}
 	
 	function modifierFrais($montant, $commentaire, $date, $id_type_frais, $id_frais)
