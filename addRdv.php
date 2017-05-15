@@ -17,5 +17,5 @@
 	}*/
 	require_once("fonctions.php");
 	
-	echo addRdv($_POST["date"], $_POST["description"], $_POST["id_praticien"], $_POST["id_visiteur"], $_POST["id_lieu"], $_POST["id_utilisateur"]);
+	echo addRdv($_POST["date"], $_POST["description"], $_POST["id_praticien"], $_POST["titre"], $_POST["id_lieu"], $_POST["id_utilisateur"], $_POST["adresseLieu"], $_POST["cpLieu"], $_POST["villeLieu"], $_POST["paysLieu"], $_POST["regionLieu"]);
 ?>

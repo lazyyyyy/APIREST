@@ -1,6 +1,24 @@
 <?php
 	//J'ai copié toutes les fonctions pour ne pas appeler le "echo" des fonctions de l'API
 	
+	function modifierRdv($id, $date, $titre, $description, $id_praticien, $id_lieu, $id_utilisateur, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu)
+	{
+		include("connexionBdd.php");
+		$data = false;
+		try{
+			$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region_id = ? WHERE id = ?");
+			$data = $req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $id_lieu));
+			if($data)
+			{
+				$req = $bdd->prepare("UPDATE rdv SET date = ?, titre = ?, description = ?, id_praticien = ?, id_lieu = ?, id_utilisateur = ? WHERE id = ?");
+				$data = $req->execute(array($date, $titre, $description, $id_praticien, $id_lieu, $id_utilisateur, $id));
+			}
+		}catch(Exception $e){
+			$data = false;
+		}
+		return json_encode($data);
+	}
+	
 	function getRdvUtilisateurByDate($id_utilisateur, $date)
 	{
 		include("connexionBdd.php");
@@ -29,7 +47,7 @@
 		include("connexionBdd.php");
 		$rdv = null;
 		$i = 0;
-		$req = $bdd->prepare("SELECT id FROM rdv WHERE DATE_FORMAT(date, '%Y') = ? AND id_utilisateur = ?");
+		$req = $bdd->prepare("SELECT id FROM rdv WHERE DATE_FORMAT(date, '%Y') = ? AND id_utilisateur = ? ORDER BY date");
 		$req->execute(array($annee, $id_utilisateur));
 		while($data = $req->fetch())
 		{
@@ -1664,14 +1682,19 @@
 		return json_encode($data); //retourne true ou false
 	}
 	
-	function addRdv($date, $description, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur)
+	function addRdv($date, $description, $id_praticien, $titre, $id_lieu, $id_utilisateur, $adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu)
 	{
 		include("connexionBdd.php");
 		
 		try
 		{
-			$req = $bdd->prepare("INSERT INTO rdv(date, description, id_praticien, id_visiteur, id_lieu, id_utilisateur) VALUES(?, ?, ?, ?, ?, ?)");
-			$data = $req->execute(array($date, $description, $id_praticien, $id_visiteur, $id_lieu, $id_utilisateur));
+			$req = $bdd->prepare("UPDATE lieu SET adresse = ?, cp = ?, ville = ?, pays = ?, region_id = ? WHERE id = ?");
+			$data = $req->execute(array($adresseLieu, $cpLieu, $villeLieu, $paysLieu, $regionLieu, $id_lieu));
+			if($data)
+			{
+				$req = $bdd->prepare("INSERT INTO rdv(date, description, id_praticien, titre, id_lieu, id_utilisateur) VALUES(?, ?, ?, ?, ?, ?)");
+				$data = $req->execute(array($date, $description, $id_praticien, $titre, $id_lieu, $id_utilisateur));
+			}
 		}
 		catch(Exception $e)
 		{
