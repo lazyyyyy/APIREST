@@ -19,6 +19,22 @@
 		return json_encode($data);
 	}
 	
+	function getRdvByUtilisateurId($id_utilisateur)
+	{
+		include("connexionBdd.php");
+		$rdv = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT id FROM rdv WHERE id_utilisateur = ?");
+		$req->execute(array($id_utilisateur));
+		while($data = $req->fetch())
+		{
+			$rdv[$i] = json_decode(getRdvById($data["id"]));
+			$i++;
+		}
+		
+		return json_encode($rdv);
+	}
+	
 	function getRdvUtilisateurByDate($id_utilisateur, $date)
 	{
 		include("connexionBdd.php");
