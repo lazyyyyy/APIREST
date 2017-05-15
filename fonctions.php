@@ -146,6 +146,25 @@
 		return json_encode($data);
 	}
 	
+	function addFraisMobile($montant, $commentaire, $date, $id_utilisateur, $id_type_frais)
+	{
+		include("connexionBdd.php");
+		$data = "Erreur";
+		try{
+			$req = $bdd->prepare("INSERT INTO frais(montant, commentaire, date, id_utilisateur, id_type_frais, date_creation) VALUES(?, ?, ?, ?, ?, NOW())");
+			$data = $req->execute(array($montant, $commentaire, $date, $id_utilisateur, $id_type_frais));
+			if($data)
+			{
+				$data = "OK";
+			}
+		}catch(Exception $e)
+		{
+			$data = false;
+		}
+		
+		$data = "Erreur";
+	}
+	
 	function modifierFrais($montant, $commentaire, $date, $id_type_frais, $id_frais)
 	{
 		include("connexionBdd.php");
@@ -1408,6 +1427,22 @@
 	{
 		include("connexionBdd.php");
 		$vehicules = null;
+		$i = 0;
+		$req = $bdd->prepare("SELECT immatricule FROM vehicule WHERE id_parc_automobile = ? AND disponible = 1");
+		$req->execute(array($id_parc_auto));
+		while($data = $req->fetch())
+		{
+			$vehicules[$i] = json_decode(getVehicule($data["immatricule"]));
+			$i++;
+		}
+		
+		return json_encode($vehicules);
+	}
+	
+	function getVehiculeByParcAutoIdMobile($id_parc_auto)
+	{
+		include("connexionBdd.php");
+		$vehicules = "NOT OK";
 		$i = 0;
 		$req = $bdd->prepare("SELECT immatricule FROM vehicule WHERE id_parc_automobile = ? AND disponible = 1");
 		$req->execute(array($id_parc_auto));
